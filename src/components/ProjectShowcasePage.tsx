@@ -19,7 +19,7 @@ import { dataStore } from '../utils/dataStore';
 interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation and Interior Construction' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation' | 'Interior Construction' | string;
   location: string;
   image: string;
   images?: string[];
@@ -52,7 +52,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
 
   // Fallback data mapping to match requested specifications
   const clientName = project.client || "Industrial Logistics Corp.";
-  const locationText = project.location ? `${project.location} Industrial Zone, PH` : "Cavite Industrial Zone, PH";
+  const locationText = project.location ? project.location : "Cavite";
   const projectSector = project.category || "Industrial Frameworks & Infrastructure";
   const totalFootage = project.id === 'proj-1' ? "12,500 Sq.M." : "8,200 Sq.M.";
   const valSavings = "14% Material Optimization";
@@ -282,10 +282,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
               )}
             </div>
 
-            {/* Blockquote with Industrial Red boundary Accent */}
-            <blockquote className="border-l-4 border-industrial-red bg-red-50/50 p-6 italic text-gray-700 text-xs sm:text-sm leading-relaxed">
-              "We take pride in our direct physical handovers. When a project is marked J/G Certified, client teams receive full verification logs, raw materials laboratory reports, and municipal structural compliance stamps securely cataloged."
-            </blockquote>
+
 
           </div>
 

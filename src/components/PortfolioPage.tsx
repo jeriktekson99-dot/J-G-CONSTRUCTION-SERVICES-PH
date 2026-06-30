@@ -7,7 +7,7 @@ import { dataStore } from '../utils/dataStore';
 interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation and Interior Construction' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation' | 'Interior Construction' | string;
   location: string;
   image: string;
   scope: string;
@@ -32,7 +32,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
 
   const PROJECTS_PER_PAGE = 6;
 
-  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Frameworks', 'Civil Works', 'Renovation and Interior Construction'] as const;
+  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Frameworks', 'Civil Works', 'Renovation', 'Interior Construction'] as const;
 
   const projects = dataStore.getProjects(false) as unknown as Project[];
   const hasCustomProjects = projects.some(p => p.id && !p.id.match(/^proj-[1-8]$/));
@@ -144,7 +144,8 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                   <option value="Commercial Build">Commercial Build</option>
                   <option value="Industrial Frameworks">Industrial Frameworks</option>
                   <option value="Civil Works">Civil Works</option>
-                  <option value="Renovation and Interior Construction">Renovation and Interior Construction</option>
+                  <option value="Renovation">Renovation</option>
+                  <option value="Interior Construction">Interior Construction</option>
                 </select>
                 {/* Custom Chevron Indicator */}
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-black font-mono text-[10px]">
@@ -251,49 +252,55 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
-                    {currentProjects.map((p) => {
-                      if (p.status === 'Completed') {
-                        return (
-                          <div 
-                            key={p.id}
-                            onClick={() => setSelectedProject(p)}
-                            className="group cursor-pointer text-left focus:outline-none"
-                          >
-                            {/* Image container frame with thin black border, 16:9 ratio */}
-                            <div className="aspect-[16/9] border border-black overflow-hidden bg-gray-50 transition-all duration-300 group-hover:border-engineering-blue shadow-[4px_4px_0px_transparent] group-hover:shadow-[4px_4px_0px_#111111]">
-                              <img 
-                                src={p.image} 
-                                alt={p.title} 
-                                referrerPolicy="no-referrer"
-                                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-102"
-                              />
-                            </div>
-
-                            {/* Details layout */}
-                            <div className="mt-5 flex items-start justify-between gap-4 min-w-0 w-full">
-                              <div className="transition-transform duration-300 group-hover:translate-x-1 min-w-0 flex-1">
-                                {/* Sector details with Blue Accent Text */}
-                                <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block break-words whitespace-normal">
-                                  {p.category} // {p.location} // <span className="text-green-600">{p.status}</span>
-                                </span>
-                                <h3 className="font-display font-black text-xl text-black mt-1 group-hover:text-industrial-red transition-colors break-words whitespace-normal">
-                                  {p.title}
-                                </h3>
+                  {filteredProjects.length === 0 ? (
+                    <div className="py-12 text-center font-mono text-xs text-gray-500">
+                      NO COMPLETED PROJECTS COMPLY WITH SELECTION FILTERS.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                      {currentProjects.map((p) => {
+                        if (p.status === 'Completed') {
+                          return (
+                            <div 
+                              key={p.id}
+                              onClick={() => setSelectedProject(p)}
+                              className="group cursor-pointer text-left focus:outline-none"
+                            >
+                              {/* Image container frame with thin black border, 16:9 ratio */}
+                              <div className="aspect-[16/9] border border-black overflow-hidden bg-gray-50 transition-all duration-300 group-hover:border-engineering-blue shadow-[4px_4px_0px_transparent] group-hover:shadow-[4px_4px_0px_#111111]">
+                                <img 
+                                  src={p.image} 
+                                  alt={p.title} 
+                                  referrerPolicy="no-referrer"
+                                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-102"
+                                />
                               </div>
 
-                              {/* Right directional arrow link indicator */}
-                              <div className="border border-black p-2 bg-white transition-colors group-hover:bg-black group-hover:text-white shrink-0 mt-1">
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                              {/* Details layout */}
+                              <div className="mt-5 flex items-start justify-between gap-4 min-w-0 w-full">
+                                <div className="transition-transform duration-300 group-hover:translate-x-1 min-w-0 flex-1">
+                                  {/* Sector details with Blue Accent Text */}
+                                  <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block break-words whitespace-normal">
+                                    {p.category} // {p.location} // <span className="text-green-600">{p.status}</span>
+                                  </span>
+                                  <h3 className="font-display font-black text-xl text-black mt-1 group-hover:text-industrial-red transition-colors break-words whitespace-normal">
+                                    {p.title}
+                                  </h3>
+                                </div>
+
+                                {/* Right directional arrow link indicator */}
+                                <div className="border border-black p-2 bg-white transition-colors group-hover:bg-black group-hover:text-white shrink-0 mt-1">
+                                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      } else {
-                        return null; // fallback
-                      }
-                    })}
-                  </div>
+                          );
+                        } else {
+                          return null; // fallback
+                        }
+                      })}
+                    </div>
+                  )}
 
                   {/* Pagination Controls */}
                   {totalPages > 1 && (
