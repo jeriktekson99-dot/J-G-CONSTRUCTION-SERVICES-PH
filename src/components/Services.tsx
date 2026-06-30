@@ -87,18 +87,10 @@ export default function Services({ onScrollToSection }: ServicesProps) {
         {/* Section Header */}
         <div className="border-b border-black pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest">
-                Our Capabilities
-              </span>
-            </div>
             <h2 className="font-display font-black text-3xl sm:text-4xl text-black tracking-tight">
               Engineered for Excellence
             </h2>
           </div>
-          <p className="text-gray-500 font-mono text-xs max-w-sm text-left md:text-right">
-            [SERVICES CATALOG v2026] // ZERO-COMPROMISE BLUEPRINT ANALYSIS AND TURNKEY STRUCTURAL WORKS
-          </p>
         </div>
 
         {/* 8-Column Grid Layout (Show 4 columns on large screens, 2 on medium, 1 on small) */}
@@ -133,10 +125,7 @@ export default function Services({ onScrollToSection }: ServicesProps) {
                   </h3>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between font-mono text-[10px] text-black font-bold">
-                  <span className="text-gray-400 group-hover:text-engineering-blue transition-colors">
-                    STRUCTURAL_ASSURE_OK
-                  </span>
+                <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-end font-mono text-[10px] text-black font-bold">
                   <div className="flex items-center gap-1 group-hover:text-industrial-red transition-colors text-xs">
                     <span>Details</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />

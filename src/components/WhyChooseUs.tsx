@@ -47,10 +47,6 @@ export default function WhyChooseUs() {
             <div className="absolute bottom-0 right-0 w-2 h-2 bg-black" />
 
             <div>
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-4">
-                The Core Philosophy // J/G SYSTEM
-              </span>
-              
               <h3 className="font-display font-black text-3xl sm:text-4xl text-black tracking-tight leading-tight mb-6">
                 Excellent Workmanship.<br/>Founded on Client Trust.
               </h3>
@@ -58,18 +54,6 @@ export default function WhyChooseUs() {
               <p className="font-sans text-gray-600 text-base leading-relaxed mb-6">
                 J/G Construction Services is committed to total customer satisfaction. We integrate architectural, structural, electrical, plumbing, and finishing works into a seamless, cost-efficient lifecycle to provide premium quality results on time.
               </p>
-            </div>
-
-            <div className="border-t border-black pt-6 mt-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-industrial-red fill-current" />
-                <span className="font-mono text-xs font-bold text-black uppercase tracking-wider">
-                  Licensed & Bonded 2026
-                </span>
-              </div>
-              <span className="text-xs font-mono text-gray-400">
-                JG_ENG_REG #09882A
-              </span>
             </div>
           </div>
 
@@ -112,19 +96,6 @@ export default function WhyChooseUs() {
             })}
           </div>
 
-        </div>
-
-        {/* Structural Horizontal Diagram under column split */}
-        <div className="mt-16 pt-8 border-t border-black flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-none bg-industrial-red" />
-            <span className="font-mono text-[10px] text-gray-500 uppercase tracking-widest leading-none">
-              Engineering workflow assurance verification protocol activated
-            </span>
-          </div>
-          <div className="font-mono text-[10px] text-black bg-gray-50 border border-gray-200 px-3 py-1 rounded-none leading-none">
-            JG_STRUCTURAL_HEALTH_METER_SECURE // 100% OK
-          </div>
         </div>
 
       </div>

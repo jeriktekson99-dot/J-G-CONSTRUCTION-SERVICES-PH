@@ -75,7 +75,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* PORTFOLIO HERO HEADER */}
-      <section className="relative py-14 border-b border-black overflow-hidden">
+      <section className="relative py-[81px] border-b border-black overflow-hidden">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -87,12 +87,15 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white" />
         </div>
 
+        {/* Background Subtle Architect Grid Pattern */}
+        <div className="absolute inset-0 z-0 opacity-[0.025] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
+          <div className="flex flex-col gap-4 text-left">
             <div>
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-2">
-                PROJECT ARCHIVE
-              </span>
               <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
                 Our Completed Works
               </h1>
@@ -196,131 +199,147 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
-                {currentProjects.map((p) => {
-                  if (p.status === 'Completed') {
-                    return (
-                      <div 
-                        key={p.id}
-                        onClick={() => setSelectedProject(p)}
-                        className="group cursor-pointer text-left focus:outline-none"
-                      >
-                        {/* Image container frame with thin black border, 16:9 ratio */}
-                        <div className="aspect-[16/9] border border-black overflow-hidden bg-gray-50 transition-all duration-300 group-hover:border-engineering-blue shadow-[4px_4px_0px_transparent] group-hover:shadow-[4px_4px_0px_#111111]">
-                          <img 
-                            src={p.image} 
-                            alt={p.title} 
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-102"
-                          />
+              {selectedStatus === 'Ongoing' ? (
+                <div className="flex flex-col w-full">
+                  {filteredProjects.map((p, idx) => (
+                    <div 
+                      key={p.id}
+                      onClick={() => setSelectedProject(p)}
+                      className="group cursor-pointer text-left flex items-start sm:items-center py-6 border-b border-gray-200 gap-4 sm:gap-6 min-w-0 w-full hover:bg-gray-50/50 transition-all duration-200 px-2"
+                    >
+                      {/* Number on Left */}
+                      <div className="font-display font-black text-[#111111] text-[20px] shrink-0 select-none pt-0.5 sm:pt-0">
+                        {String(idx + 1).padStart(2, '0')}
+                      </div>
+
+                      {/* Details in the Middle */}
+                      <div className="min-w-0 flex-1">
+                        <div className="font-mono text-[13px] text-gray-900 font-extrabold uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                          <span className="font-bold shrink-0">ONGOING PROJECT</span>
+                          <span className="text-gray-300 font-medium shrink-0">|</span>
+                          <span className="font-semibold truncate block shrink-1 text-gray-900" title={p.category}>{p.category}</span>
                         </div>
 
-                        {/* Details layout */}
-                        <div className="mt-5 flex items-start justify-between gap-4 min-w-0 w-full">
-                          <div className="transition-transform duration-300 group-hover:translate-x-1 min-w-0 flex-1">
-                            {/* Sector details with Blue Accent Text */}
-                            <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block break-words whitespace-normal">
-                              {p.category} // {p.location} // <span className="text-green-600">{p.status}</span>
-                            </span>
-                            <h3 className="font-display font-black text-xl text-black mt-1 group-hover:text-industrial-red transition-colors break-words whitespace-normal">
-                              {p.title}
-                            </h3>
-                          </div>
+                        <h3 className="font-display font-black text-[#111111] text-[23px] uppercase tracking-tight group-hover:text-industrial-red transition-colors break-words whitespace-normal mb-2 leading-snug">
+                          {p.title}
+                        </h3>
 
-                          {/* Right directional arrow link indicator */}
-                          <div className="border border-black p-2 bg-white transition-colors group-hover:bg-black group-hover:text-white shrink-0 mt-1">
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        {/* Client & Location details */}
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[13px] uppercase text-gray-500">
+                          <div>
+                            <span className="font-bold text-black">CLIENT:</span> <span className="text-gray-900 font-medium">{p.client}</span>
+                          </div>
+                          <span className="text-gray-300">•</span>
+                          <div>
+                            <span className="font-bold text-black">LOCATION:</span> <span className="text-gray-900 font-medium">{p.location}, PH</span>
                           </div>
                         </div>
                       </div>
-                    );
-                  } else {
-                    return (
-                      <div 
-                        key={p.id}
-                        className="border-2 border-black bg-white p-6 shadow-[5px_5px_0px_#111111] hover:shadow-[7px_7px_0px_#1B49B8] transition-all duration-300 text-left rounded-none flex flex-col justify-between min-w-0 w-full"
-                      >
-                        <div className="min-w-0 w-full">
-                          {/* Status indicator badge */}
-                          <div className="font-mono text-[9px] text-gray-500 font-extrabold uppercase tracking-widest mb-3 flex items-center justify-between gap-2">
-                            <span className="bg-[#111111] text-white px-2 py-0.5 font-bold shrink-0">PROJECT STATUS // {p.status}</span>
-                            <span className="text-industrial-red font-bold shrink-0">// IN PROGRESS</span>
-                          </div>
 
-                          <h3 className="font-display font-black text-[#111111] text-lg sm:text-xl uppercase tracking-tight mb-2 break-words break-all whitespace-normal">
-                            {p.title}
-                          </h3>
-
-                          <p className="font-sans text-xs sm:text-sm text-gray-600 leading-relaxed mb-6 break-words break-all whitespace-normal">
-                            {p.description}
-                          </p>
-                        </div>
-
-                        {/* Three custom basis detail list */}
-                        <div className="border-t border-dashed border-gray-200 pt-4 space-y-2.5 font-mono text-[10px] uppercase text-gray-600 min-w-0 w-full">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 min-w-0 w-full">
-                            <span className="font-bold text-black shrink-0">CLIENT REPRESENTATIVE:</span>
-                            <span className="text-gray-900 font-medium sm:text-right truncate max-w-full block" title={p.client}>{p.client}</span>
-                          </div>
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 min-w-0 w-full">
-                            <span className="font-bold text-black shrink-0">SECTOR CATEGORIZATION:</span>
-                            <span className="text-[#1B49B8] font-bold sm:text-right truncate max-w-full block" title={p.category}>{p.category}</span>
-                          </div>
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 min-w-0 w-full">
-                            <span className="font-bold text-black shrink-0">MUNICIPAL LOCATION:</span>
-                            <span className="text-gray-900 font-medium sm:text-right truncate max-w-full block" title={p.location}>{p.location}, PH</span>
-                          </div>
-                        </div>
+                      {/* Arrow on Right */}
+                      <div className="shrink-0 p-2 border border-black bg-white group-hover:bg-[#1B49B8] group-hover:text-white transition-all duration-300 select-none">
+                        <ArrowRight className="h-4 w-4" />
                       </div>
-                    );
-                  }
-                })}
-              </div>
+                    </div>
+                  ))}
+                  {filteredProjects.length === 0 && (
+                    <div className="py-12 text-center font-mono text-xs text-gray-500">
+                      NO ONGOING PROJECTS COMPLY WITH SELECTION FILTERS.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                    {currentProjects.map((p) => {
+                      if (p.status === 'Completed') {
+                        return (
+                          <div 
+                            key={p.id}
+                            onClick={() => setSelectedProject(p)}
+                            className="group cursor-pointer text-left focus:outline-none"
+                          >
+                            {/* Image container frame with thin black border, 16:9 ratio */}
+                            <div className="aspect-[16/9] border border-black overflow-hidden bg-gray-50 transition-all duration-300 group-hover:border-engineering-blue shadow-[4px_4px_0px_transparent] group-hover:shadow-[4px_4px_0px_#111111]">
+                              <img 
+                                src={p.image} 
+                                alt={p.title} 
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-102"
+                              />
+                            </div>
 
-              {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="mt-16 flex justify-center items-center gap-3 font-mono text-xs">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.max(prev - 1, 1));
-                      window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }}
-                    className="px-4 py-2 border border-black font-bold uppercase tracking-wider bg-white hover:bg-gray-50 text-black disabled:opacity-30 disabled:pointer-events-none cursor-pointer transition-colors"
-                  >
-                    ◀ Prev
-                  </button>
-                  
-                  <div className="flex items-center gap-1.5">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                      <button
-                        key={pageNum}
-                        onClick={() => {
-                          setCurrentPage(pageNum);
-                          window.scrollTo({ top: 300, behavior: 'smooth' });
-                        }}
-                        className={`px-3 py-2 border border-black font-bold transition-colors cursor-pointer ${
-                          currentPage === pageNum 
-                            ? 'bg-black text-white' 
-                            : 'bg-white hover:bg-gray-50 text-black'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    ))}
+                            {/* Details layout */}
+                            <div className="mt-5 flex items-start justify-between gap-4 min-w-0 w-full">
+                              <div className="transition-transform duration-300 group-hover:translate-x-1 min-w-0 flex-1">
+                                {/* Sector details with Blue Accent Text */}
+                                <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block break-words whitespace-normal">
+                                  {p.category} // {p.location} // <span className="text-green-600">{p.status}</span>
+                                </span>
+                                <h3 className="font-display font-black text-xl text-black mt-1 group-hover:text-industrial-red transition-colors break-words whitespace-normal">
+                                  {p.title}
+                                </h3>
+                              </div>
+
+                              {/* Right directional arrow link indicator */}
+                              <div className="border border-black p-2 bg-white transition-colors group-hover:bg-black group-hover:text-white shrink-0 mt-1">
+                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        return null; // fallback
+                      }
+                    })}
                   </div>
 
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.min(prev + 1, totalPages));
-                      window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }}
-                    className="px-4 py-2 border border-black font-bold uppercase tracking-wider bg-white hover:bg-gray-50 text-black disabled:opacity-30 disabled:pointer-events-none cursor-pointer transition-colors"
-                  >
-                    Next ▶
-                  </button>
-                </div>
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="mt-16 flex justify-center items-center gap-3 font-mono text-xs">
+                      <button
+                        disabled={currentPage === 1}
+                        onClick={() => {
+                          setCurrentPage(prev => Math.max(prev - 1, 1));
+                          window.scrollTo({ top: 300, behavior: 'smooth' });
+                        }}
+                        className="px-4 py-2 border border-black font-bold uppercase tracking-wider bg-white hover:bg-gray-50 text-black disabled:opacity-30 disabled:pointer-events-none cursor-pointer transition-colors"
+                      >
+                        ◀ Prev
+                      </button>
+                      
+                      <div className="flex items-center gap-1.5">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                          <button
+                            key={pageNum}
+                            onClick={() => {
+                              setCurrentPage(pageNum);
+                              window.scrollTo({ top: 300, behavior: 'smooth' });
+                            }}
+                            className={`px-3 py-2 border border-black font-bold transition-colors cursor-pointer ${
+                              currentPage === pageNum 
+                                ? 'bg-black text-white' 
+                                : 'bg-white hover:bg-gray-50 text-black'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => {
+                          setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                          window.scrollTo({ top: 300, behavior: 'smooth' });
+                        }}
+                        className="px-4 py-2 border border-black font-bold uppercase tracking-wider bg-white hover:bg-gray-50 text-black disabled:opacity-30 disabled:pointer-events-none cursor-pointer transition-colors"
+                      >
+                        Next ▶
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
@@ -345,9 +364,6 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
             
             {/* Column Text */}
             <div>
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-2">
-                LET'S PARTNER // ESTIMATE REVIEW
-              </span>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-black leading-tight uppercase animate-pulse-slow">
                 Ready to work together?
               </h2>

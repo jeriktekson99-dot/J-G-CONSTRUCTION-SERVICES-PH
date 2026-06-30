@@ -55,18 +55,10 @@ export default function Showcase({ onScrollToSection, onSelectProject, isInitial
         {/* Section Header */}
         <div className="border-b border-black pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest">
-                Our Showcase
-              </span>
-            </div>
             <h2 className="font-display font-black text-3xl sm:text-4xl text-black tracking-tight">
               Standard-Setting Executions
             </h2>
           </div>
-          <p className="text-gray-500 font-mono text-xs max-w-sm text-left md:text-right">
-            [EXCELLENCE YOU CAN TRUST / MULTI-PIECE PORTFOLIO MATRIX]
-          </p>
         </div>
 
         {showLoadingBar ? (

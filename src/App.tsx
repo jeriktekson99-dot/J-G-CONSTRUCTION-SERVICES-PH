@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ProblemSolution from './components/ProblemSolution';
+import HomeFaq from './components/HomeFaq';
 import Services from './components/Services';
 import Showcase from './components/Showcase';
 import WhyChooseUs from './components/WhyChooseUs';
@@ -15,7 +15,6 @@ import ConsultationForm from './components/ConsultationForm';
 import About from './components/About';
 import ServicesPage from './components/ServicesPage';
 import PortfolioPage from './components/PortfolioPage';
-import GetStartedPage from './components/GetStartedPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
 import SafetyCompliance from './components/SafetyCompliance';
@@ -209,8 +208,14 @@ export default function App() {
   const handleScrollToSection = (id: string) => {
     setSelectedProject(null);
     if (id === 'consultation') {
-      setCurrentView('get-started');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (currentView !== 'home') {
+        setCurrentView('home');
+        setTimeout(() => {
+          scrollToElement('consultation');
+        }, 150);
+      } else {
+        scrollToElement('consultation');
+      }
       return;
     }
     if (id === 'services-view') {
@@ -292,9 +297,6 @@ export default function App() {
                   onViewProjects={() => handleScrollToSection('showcase')}
                 />
                 
-                {/* Problem Statement & Solution Statement Splits */}
-                <ProblemSolution />
-                
                 {/* Offered Services Section */}
                 <Services onScrollToSection={handleScrollToSection} />
                 
@@ -310,6 +312,9 @@ export default function App() {
                 
                 {/* Testimonials Review Card Matrix */}
                 <Testimonials />
+                
+                {/* Frequently Asked Questions (FAQs) */}
+                <HomeFaq />
                 
                 {/* Clean Estimating & Consultation Form */}
                 <ConsultationForm onScrollToSection={handleScrollToSection} />
@@ -329,10 +334,6 @@ export default function App() {
                 onScrollToSection={handleScrollToSection} 
                 isInitialSyncLoading={isInitialSyncLoading}
               />
-            )}
-  
-            {currentView === 'get-started' && (
-              <GetStartedPage onScrollToSection={handleScrollToSection} />
             )}
   
             {currentView === 'privacy-policy' && (

@@ -11,6 +11,7 @@ export interface Lead {
   status: 'Pending' | 'Reviewed' | 'Archived';
   isDeleted?: boolean;
   serviceCategory?: string;
+  attachments?: { name: string; size: string; type?: string; dataUrl?: string }[];
 }
 
 export interface Project {
@@ -225,6 +226,12 @@ const isClient = typeof window !== 'undefined';
 
 const listeners = new Set<() => void>();
 
+import { getAllAttachments, saveAttachment, deleteAttachment } from './indexedDB';
+
+// In-memory cache for attachment dataUrl strings
+const attachmentCache = new Map<string, string>();
+let isCacheLoaded = false;
+
 if (typeof window !== 'undefined') {
   window.addEventListener('jg_database_sync_updated', () => {
     listeners.forEach(fn => fn());
@@ -236,6 +243,17 @@ if (typeof window !== 'undefined') {
       listeners.forEach(fn => fn());
     }
   });
+
+  // Load attachments from IndexedDB into memory cache in the background on startup
+  getAllAttachments().then((all) => {
+    for (const [key, dataUrl] of Object.entries(all)) {
+      attachmentCache.set(key, dataUrl);
+    }
+    isCacheLoaded = true;
+    listeners.forEach(fn => fn());
+  }).catch((err) => {
+    console.error("Error populating attachment cache:", err);
+  });
 }
 
 const safeSetItem = (key: string, value: string): void => {
@@ -246,6 +264,55 @@ const safeSetItem = (key: string, value: string): void => {
     console.error(`[dataStore] QuotaExceededError or general storage failure for key "${key}".`, e);
   }
 };
+
+// Standalone top-level exported helper functions for lead attachments inside the projectScope TEXT field
+export function serializeLeadAttachments(lead: Lead): Lead {
+  if (!lead.attachments || lead.attachments.length === 0) {
+    return lead;
+  }
+  if (lead.projectScope.includes("---ATTACHMENTS_JSON_START---")) {
+    return lead;
+  }
+  // Strip dataUrl from attachments before serializing to localStorage / Supabase
+  const cleanAttachments = lead.attachments.map(att => ({
+    name: att.name,
+    size: att.size,
+    type: att.type
+  }));
+  const attachmentsJson = JSON.stringify(cleanAttachments);
+  const serializedScope = `${lead.projectScope}\n---ATTACHMENTS_JSON_START---\n${attachmentsJson}\n---ATTACHMENTS_JSON_END---`;
+  return {
+    ...lead,
+    projectScope: serializedScope
+  };
+}
+
+export function deserializeLeadAttachments(lead: any): Lead {
+  if (!lead || !lead.projectScope) return lead;
+  
+  const scope = lead.projectScope;
+  const startTag = "---ATTACHMENTS_JSON_START---";
+  const endTag = "---ATTACHMENTS_JSON_END---";
+  
+  const startIndex = scope.indexOf(startTag);
+  const endIndex = scope.indexOf(endTag);
+  
+  if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+    try {
+      const jsonStr = scope.substring(startIndex + startTag.length, endIndex).trim();
+      const attachments = JSON.parse(jsonStr);
+      const cleanScope = scope.substring(0, startIndex).trim();
+      return {
+        ...lead,
+        projectScope: cleanScope,
+        attachments: Array.isArray(attachments) ? attachments : []
+      };
+    } catch (e) {
+      console.warn("Failed to parse serialized attachments:", e);
+    }
+  }
+  return lead;
+}
 
 export const dataStore = {
   subscribe(listener: () => void): () => void {
@@ -321,8 +388,17 @@ export const dataStore = {
 
     // Sort projects: Newest first (descending order of updatedAt/timestamp)
     filteredProjects.sort((a, b) => {
-      const timeA = a.updatedAt || 0;
-      const timeB = b.updatedAt || 0;
+      const getProjectTimestamp = (p: Project): number => {
+        if (p.updatedAt) return p.updatedAt;
+        if (p.id && p.id.startsWith('proj-')) {
+          const tsStr = p.id.substring(5);
+          const ts = Number(tsStr);
+          if (!isNaN(ts)) return ts;
+        }
+        return 0;
+      };
+      const timeA = getProjectTimestamp(a);
+      const timeB = getProjectTimestamp(b);
       if (timeB !== timeA) {
         return timeB - timeA;
       }
@@ -334,7 +410,17 @@ export const dataStore = {
       return b.id.localeCompare(a.id);
     });
 
-    return filteredProjects;
+    // Deduplicate projects by id
+    const uniqueProjects: Project[] = [];
+    const projectIds = new Set<string>();
+    for (const proj of filteredProjects) {
+      if (proj && proj.id && !projectIds.has(proj.id)) {
+        projectIds.add(proj.id);
+        uniqueProjects.push(proj);
+      }
+    }
+
+    return uniqueProjects;
   },
 
   getProjectById(id: string): Project | undefined {
@@ -384,8 +470,6 @@ export const dataStore = {
     await supabaseSync.deleteProject(id);
   },
 
-
-
   // LEADS (Inbound Data capture) CRUD
   getLeads(includeDeleted = false): Lead[] {
     if (!isClient) return DEFAULT_LEADS;
@@ -394,8 +478,33 @@ export const dataStore = {
       safeSetItem('jg_leads', JSON.stringify(DEFAULT_LEADS));
       return DEFAULT_LEADS;
     }
-    const leads: Lead[] = JSON.parse(raw);
-    let filtered = includeDeleted ? leads : leads.filter(l => !l.isDeleted);
+    const leads: Lead[] = JSON.parse(raw).map(deserializeLeadAttachments);
+    
+    // Hydrate each lead's attachments from the in-memory cache
+    for (const lead of leads) {
+      if (lead && lead.attachments && lead.attachments.length > 0) {
+        lead.attachments = lead.attachments.map((file) => {
+          const cacheKey = `${lead.id}_${file.name}`;
+          const cachedDataUrl = attachmentCache.get(cacheKey);
+          if (cachedDataUrl) {
+            return { ...file, dataUrl: cachedDataUrl };
+          }
+          return file;
+        });
+      }
+    }
+
+    // Deduplicate leads by id
+    const uniqueLeads: Lead[] = [];
+    const leadIds = new Set<string>();
+    for (const lead of leads) {
+      if (lead && lead.id && !leadIds.has(lead.id)) {
+        leadIds.add(lead.id);
+        uniqueLeads.push(lead);
+      }
+    }
+
+    let filtered = includeDeleted ? uniqueLeads : uniqueLeads.filter(l => !l.isDeleted);
     
     // Always filter out default template leads completely for good
     filtered = filtered.filter(l => !l.id || !l.id.match(/^lead-[1-2]$/));
@@ -412,16 +521,35 @@ export const dataStore = {
 
   addLead(lead: Omit<Lead, 'id' | 'timestamp' | 'status'>): Lead {
     const leads = this.getLeads(true);
+    const newId = 'lead-' + Date.now();
+    
+    // Move attachments' dataUrl into IndexedDB and cache, and strip them from the local storage object!
+    let processedAttachments = lead.attachments;
+    if (processedAttachments && processedAttachments.length > 0) {
+      processedAttachments = processedAttachments.map((file) => {
+        if (file.dataUrl) {
+          const cacheKey = `${newId}_${file.name}`;
+          attachmentCache.set(cacheKey, file.dataUrl);
+          saveAttachment(cacheKey, file.dataUrl).catch(err => console.error("IndexedDB save failed:", err));
+          // Strip dataUrl from what goes into localStorage
+          return { ...file, dataUrl: undefined };
+        }
+        return file;
+      });
+    }
+
     const newLead: Lead = {
       ...lead,
-      id: 'lead-' + Date.now(),
+      id: newId,
+      attachments: processedAttachments,
       timestamp: new Date().toISOString(),
       status: 'Pending'
     };
     leads.unshift(newLead);
     if (isClient) {
-      safeSetItem('jg_leads', JSON.stringify(leads));
-      supabaseSync.pushLead(newLead);
+      const serializedLeads = leads.map(serializeLeadAttachments);
+      safeSetItem('jg_leads', JSON.stringify(serializedLeads));
+      supabaseSync.pushLead(serializeLeadAttachments(newLead));
     }
     return newLead;
   },
@@ -432,8 +560,9 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].status = status;
-      safeSetItem('jg_leads', JSON.stringify(leads));
-      supabaseSync.pushLead(leads[index]);
+      const serializedLeads = leads.map(serializeLeadAttachments);
+      safeSetItem('jg_leads', JSON.stringify(serializedLeads));
+      supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
     }
   },
 
@@ -443,8 +572,9 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].isDeleted = true;
-      safeSetItem('jg_leads', JSON.stringify(leads));
-      await supabaseSync.pushLead(leads[index]);
+      const serializedLeads = leads.map(serializeLeadAttachments);
+      safeSetItem('jg_leads', JSON.stringify(serializedLeads));
+      await supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
     }
   },
 
@@ -454,16 +584,31 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].isDeleted = false;
-      safeSetItem('jg_leads', JSON.stringify(leads));
-      await supabaseSync.pushLead(leads[index]);
+      const serializedLeads = leads.map(serializeLeadAttachments);
+      safeSetItem('jg_leads', JSON.stringify(serializedLeads));
+      await supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
     }
   },
 
   async hardDeleteLead(id: string): Promise<void> {
     if (!isClient) return;
     const leads = this.getLeads(true).filter(l => l.id !== id);
-    safeSetItem('jg_leads', JSON.stringify(leads));
+    const serializedLeads = leads.map(serializeLeadAttachments);
+    safeSetItem('jg_leads', JSON.stringify(serializedLeads));
     await supabaseSync.deleteLead(id);
+
+    // Also clean up IndexedDB for all attachments of this lead in the background
+    try {
+      const all = await getAllAttachments();
+      for (const key of Object.keys(all)) {
+        if (key.startsWith(id + "_")) {
+          attachmentCache.delete(key);
+          await deleteAttachment(key);
+        }
+      }
+    } catch (e) {
+      console.warn("Error cleaning up deleted lead attachments from IndexedDB:", e);
+    }
   },
 
   // SERVICES CRUD
@@ -479,7 +624,15 @@ export const dataStore = {
       safeSetItem('jg_services', JSON.stringify(DEFAULT_SERVICES));
       return DEFAULT_SERVICES;
     }
-    return parsed;
+    const uniqueServices: ServiceItem[] = [];
+    const serviceIds = new Set<string>();
+    for (const svc of parsed) {
+      if (svc && svc.id && !serviceIds.has(svc.id)) {
+        serviceIds.add(svc.id);
+        uniqueServices.push(svc);
+      }
+    }
+    return uniqueServices;
   },
 
   saveService(service: ServiceItem): void {

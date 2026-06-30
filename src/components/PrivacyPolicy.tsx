@@ -10,16 +10,11 @@ export default function PrivacyPolicy({ onScrollToSection }: PrivacyPolicyProps)
     <div className="bg-white pb-0 text-[#111111]">
       
       {/* PAGE HERO HEADER (WITHOUT BACKGROUND IMAGE) */}
-      <section className="relative pt-32 pb-14 border-b border-black overflow-hidden bg-gray-50">
+      <section className="relative pt-44 pb-20 border-b border-black overflow-hidden bg-gray-50">
         <div className="w-full px-6 sm:px-12 md:px-20 lg:px-32 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4 text-left">
+          <div className="flex flex-col gap-4 text-left">
             <div>
-              <div className="inline-flex items-center gap-2 mb-2">
-                <span className="font-mono text-xs font-bold text-industrial-red uppercase tracking-widest">
-                  LEGAL CHARTER // PRIVACY ASSURANCE
-                </span>
-              </div>
-              <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
+              <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none text-left">
                 PRIVACY POLICY
               </h1>
             </div>

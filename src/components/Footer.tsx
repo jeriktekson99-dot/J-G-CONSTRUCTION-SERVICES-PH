@@ -75,7 +75,12 @@ export default function Footer({ setView, onScrollToSection }: FooterProps) {
               onClick={() => handleLinkClick('home')}
               className="flex items-center gap-3 justify-start cursor-pointer focus:outline-none group text-left"
             >
-              <SgLogo className="h-8 w-8 text-black group-hover:rotate-6 transition-transform duration-300" />
+              <img 
+                src="https://lh3.googleusercontent.com/d/1TztSWdzD5w6pHrnNZUMhsRde0r2ncMtz"
+                alt="J/G Logo"
+                className="h-8 w-8 object-contain group-hover:rotate-6 transition-transform duration-300"
+                referrerPolicy="no-referrer"
+              />
               <span className="font-display font-extrabold tracking-tight text-black text-lg">
                 J/G CONSTRUCTION
               </span>
@@ -247,7 +252,7 @@ export default function Footer({ setView, onScrollToSection }: FooterProps) {
           {/* Col 4: Address / Contacts */}
           <div className="lg:col-span-3 space-y-4">
             <h5 className="font-mono text-xs font-black text-black uppercase tracking-wider border-b border-black pb-2">
-              Operational Hub
+              Contact Details & Address
             </h5>
             <ul className="space-y-3 font-sans text-xs text-gray-600">
               <li className="flex gap-2 items-start">

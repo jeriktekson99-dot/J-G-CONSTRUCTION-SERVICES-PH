@@ -45,6 +45,10 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
   const [message, setMessage] = useState('');
   const [serviceCategory, setServiceCategory] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  
+  const [selectedFiles, setSelectedFiles] = useState<{ name: string; size: string; type: string; dataUrl: string }[]>([]);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Fallback data mapping to match requested specifications
   const clientName = project.client || "Industrial Logistics Corp.";
@@ -83,12 +87,18 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
     e.preventDefault();
     if (!name || !phone || !email || !serviceCategory) return;
     
+    let scopeText = message ? `[Inquiry on ${project.title}] ${message}` : `Inquiry regarding similar project structure to: ${project.title}`;
+    if (selectedFiles.length > 0) {
+      scopeText += "\n" + selectedFiles.map(f => `[Uploaded Attachment: ${f.name} (${f.size})]`).join("\n");
+    }
+
     dataStore.addLead({
       fullName: name,
       companyEmail: email,
       phone: phone,
-      projectScope: message ? `[Inquiry on ${project.title}] ${message}` : `Inquiry regarding similar project structure to: ${project.title}`,
-      serviceCategory: serviceCategory
+      projectScope: scopeText,
+      serviceCategory: serviceCategory,
+      attachments: selectedFiles
     });
 
     setSubmitted(true);
@@ -98,6 +108,8 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
       setEmail('');
       setMessage('');
       setServiceCategory('');
+      setSelectedFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }, 2000);
   };
 
@@ -106,7 +118,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
   };
 
   return (
-    <div className={`bg-white min-h-screen ${isPreview ? 'pt-6' : 'pt-24'} pb-0 text-[#111111] font-sans selection:bg-industrial-red selection:text-white`}>
+    <div className={`bg-white min-h-screen ${isPreview ? 'pt-6' : 'pt-32 sm:pt-36'} pb-0 text-[#111111] font-sans selection:bg-industrial-red selection:text-white`}>
       
       {/* Back button tier */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 border-b border-gray-100 flex items-center justify-between">
@@ -117,9 +129,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           Back to Portfolio Matrix
         </button>
-        <span className="font-mono text-[9px] text-gray-400 select-none">
-          CASE STUDY REVIEW // STABILIZED_STATE
-        </span>
       </div>
 
       {/* PROJECT DEEP DIVE LAYOUT */}
@@ -207,7 +216,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
               </div>
 
               {/* Row of Interactive Thumbnail Grid - Sharp landscape frame aspect */}
-              <div className="grid grid-cols-4 gap-3 sm:gap-4">
+              <div className={`w-full overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex gap-3 sm:gap-4`}>
                 {(project.images && project.images.length > 0 ? project.images : [
                   project.image,
                   "/assets/images/blueprint_cad_1780503663960.png",
@@ -215,12 +224,15 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                   "/assets/images/about_construction_site_1780503065020.png"
                 ]).map((thumbSrc, index) => {
                   const isActive = activeThumbIndex === index;
+                  const totalImages = project.images && project.images.length > 0 ? project.images.length : 4;
                   return (
                     <button
                       key={index}
                       type="button"
                       onClick={() => setActiveThumbIndex(index)}
-                      className={`aspect-[16/10] overflow-hidden border-2 transition-all duration-300 relative cursor-pointer focus:outline-none ${
+                      className={`aspect-[16/10] overflow-hidden border-2 transition-all duration-300 relative cursor-pointer focus:outline-none shrink-0 ${
+                        totalImages > 4 ? "w-[22%] min-w-[100px] sm:min-w-[150px]" : "flex-1"
+                      } ${
                         isActive 
                           ? "border-industrial-red scale-[1.02] shadow-[3px_3px_0px_#111111]" 
                           : "border-black opacity-60 hover:opacity-100 grayscale hover:grayscale-0 hover:scale-[1.01]"
@@ -240,10 +252,10 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
             </div>
 
             <div className="space-y-6 min-w-0 w-full overflow-hidden">
-              {/* Dynamic Project profile description */}
+              {/* Consolidated Project Scope & Details */}
               <div className="space-y-3 min-w-0 w-full overflow-hidden">
                 <h2 className="font-display font-extrabold text-xl sm:text-2xl text-black uppercase tracking-tight border-b-2 border-black pb-2.5">
-                  The Project Profile & Structural Description
+                  Project Scope & Details
                 </h2>
                 {project.description && (project.description.includes('<') || project.description.includes('&lt;')) ? (
                   <div 
@@ -253,23 +265,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                 ) : (
                   <p className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden">
                     {project.description || "No project specification profiles ingested."}
-                  </p>
-                )}
-              </div>
-
-              {/* Dynamic Scope of work deliverables */}
-              <div className="space-y-3 pt-4 min-w-0 w-full overflow-hidden">
-                <h2 className="font-display font-extrabold text-xl sm:text-2xl text-black uppercase tracking-tight border-b-2 border-black pb-2.5">
-                  Execution & Core Deliverables Scope
-                </h2>
-                {project.scope && (project.scope.includes('<') || project.scope.includes('&lt;')) ? (
-                  <div 
-                    className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed space-y-3 prose max-w-none prose-headings:font-display prose-headings:font-black break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden"
-                    dangerouslySetInnerHTML={{ __html: project.scope }}
-                  />
-                ) : (
-                  <p className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden">
-                    {project.scope || "No active engineering deliverables lists cataloged."}
                   </p>
                 )}
               </div>
@@ -299,9 +294,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
             
             {/* Layout Card 1 (Responsible Sign-Off / Project Leadership) */}
             <div className="border border-black p-6 bg-white shadow-[4px_4px_0px_#111111] space-y-4 text-left">
-              <span className="font-mono text-[10px] font-black text-industrial-red uppercase tracking-widest block">
-                // EXECUTIVE BY-LINE
-              </span>
               <div>
                 <span className="font-mono text-[9px] text-gray-400 font-bold block uppercase tracking-wider">
                   MANAGING ENGINEER
@@ -340,9 +332,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
 
             {/* Layout Card 2 (Project Inquiry Form) */}
             <div className="bg-gray-50 border border-black p-5 shadow-[4px_4px_0px_#1B49B8] text-left">
-              <span className="font-mono text-[9.5px] font-black text-[#1B49B8] uppercase tracking-widest block mb-1">
-                // TECHNICAL INQUIRY
-              </span>
               <h4 className="font-display font-extrabold text-sm text-black uppercase">
                 Inquire About Similar Builds
               </h4>
@@ -434,6 +423,107 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                       className="w-full bg-white border border-black p-2 text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-[#1B49B8] text-black font-sans resize-none"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-[10px] font-mono font-bold text-black uppercase mb-1">
+                      Upload Blueprints / Files <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <div
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragActive(true);
+                      }}
+                      onDragLeave={() => setDragActive(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setDragActive(false);
+                        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                          const filesArray = Array.from(e.dataTransfer.files) as File[];
+                          filesArray.forEach((file: File) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setSelectedFiles(prev => [...prev, {
+                                name: file.name,
+                                size: (file.size / 1024).toFixed(1) + " KB",
+                                type: file.type,
+                                dataUrl: reader.result as string
+                              }]);
+                            };
+                            reader.readAsDataURL(file);
+                          });
+                        }
+                      }}
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`border-2 border-dashed p-3 text-center cursor-pointer transition-colors ${
+                        dragActive 
+                          ? "border-[#1B49B8] bg-blue-50/30" 
+                          : "border-gray-300 hover:border-black bg-[#fafafa]"
+                      }`}
+                    >
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        multiple
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            const filesArray = Array.from(e.target.files) as File[];
+                            filesArray.forEach((file: File) => {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setSelectedFiles(prev => [...prev, {
+                                  name: file.name,
+                                  size: (file.size / 1024).toFixed(1) + " KB",
+                                  type: file.type,
+                                  dataUrl: reader.result as string
+                                }]);
+                              };
+                              reader.readAsDataURL(file);
+                            });
+                          }
+                        }}
+                        className="hidden"
+                      />
+                      {selectedFiles.length > 0 ? (
+                        <div className="space-y-1.5 animate-fade-in" onClick={(e) => e.stopPropagation()}>
+                          <div className="text-left font-mono text-[9px] text-gray-400 uppercase font-black tracking-widest">// ATTACHED FILES ({selectedFiles.length}):</div>
+                          {selectedFiles.map((file, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-left bg-white border border-black p-1.5">
+                              <div className="flex items-center gap-2 overflow-hidden mr-2">
+                                <span className="font-mono text-[10px] font-bold text-gray-500 shrink-0">#{(idx+1)}:</span>
+                                <span className="font-sans text-[11px] text-black font-semibold truncate max-w-[150px]" title={file.name}>
+                                  {file.name}
+                                </span>
+                                <span className="font-mono text-[9px] text-gray-400 shrink-0">({file.size})</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
+                                }}
+                                className="text-industrial-red hover:text-red-700 font-mono text-[9px] uppercase font-black tracking-widest px-1 shrink-0 cursor-pointer"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                          <div className="font-mono text-[9px] text-gray-400 uppercase font-black tracking-widest text-center mt-1.5 hover:text-black transition-colors">
+                            + Drag & drop or <span className="text-[#1B49B8] underline cursor-pointer" onClick={() => fileInputRef.current?.click()}>add more</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-0.5">
+                          <div className="font-mono text-[9px] text-gray-400 uppercase font-black tracking-widest">
+                            Drag & drop or <span className="text-[#1B49B8] underline">browse files</span>
+                          </div>
+                          <p className="font-sans text-[9px] text-gray-500">
+                            PDF, CAD, DWG, PNG, or JPG (Max 25MB)
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <button 
                     type="submit"
                     className="w-full bg-black hover:bg-gray-900 text-white font-display font-bold text-xs uppercase py-2.5 px-4 rounded-none transition-all tracking-widest cursor-pointer shadow-[3px_3px_0px_#D41D1D] active:shadow-[0px_0px_0px_#111111] border border-black"
@@ -467,9 +557,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
             
             {/* Column Text */}
             <div>
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-2">
-                LET'S PARTNER // ESTIMATE REVIEW
-              </span>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-black leading-tight uppercase animate-pulse-slow">
                 Ready to work together?
               </h2>

@@ -198,7 +198,7 @@ export default function About({ onScrollToSection }: AboutProps) {
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* PAGE HERO HEADER */}
-      <section className="relative py-14 border-b border-black overflow-hidden">
+      <section className="relative py-[81px] border-b border-black overflow-hidden">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -209,15 +209,16 @@ export default function About({ onScrollToSection }: AboutProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white" />
         </div>
+
+        {/* Background Subtle Architect Grid Pattern */}
+        <div className="absolute inset-0 z-0 opacity-[0.025] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4 text-left">
+          <div className="flex flex-col gap-4 text-left">
             <div>
-              <div className="inline-flex items-center gap-2 mb-2">
-                <span className="font-mono text-xs font-bold text-industrial-red uppercase tracking-widest">
-                  WHO WE ARE // EXCELLENT WORKMANSHIP
-                </span>
-              </div>
               <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
                 ABOUT OUR FIRM
               </h1>
@@ -233,19 +234,21 @@ export default function About({ onScrollToSection }: AboutProps) {
             
             {/* Left Column Text */}
             <div className="lg:col-span-6 text-left">
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-3">
-                OUR ORIGINS // FOUNDED BY ENGR. GREGORIO A. LACAY
-              </span>
               <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-black tracking-tight leading-tight mb-6">
                 Specialized Craftsmanship.<br/>Built on a Foundation of Trust.
               </h2>
               <p className="font-sans text-gray-600 text-sm leading-relaxed mb-6">
-                Founded by <strong>Engr. Gregorio A. Lacay</strong>, <strong>J/G Construction Services</strong> is a dynamic new entrant in the construction and engineering industry, driven by a strict commitment to quality, integrity, and exceptional workmanship. Backed by solid professional experience, the firm delivers dependable building and engineering solutions—including general construction, civil works, renovation, and interior fit-outs—across corporate offices, retail outlets, and residential units.
+                <strong>J/G Construction Services</strong> is a premier construction and engineering firm dedicated to high-precision general construction, civil works, meticulous renovations, and interior fit-outs. We specialize in transforming complex structural blueprints into robust, compliant, and exquisitely finished corporate offices, retail spaces, and premium residential properties. Grounded in integrity and engineered for excellence, we ensure every project is built to the highest standards.
               </p>
-              <div className="p-4 bg-gray-50 border border-gray-200 font-mono text-xs text-black space-y-1">
-                <div className="font-bold text-engineering-blue">// INDUSTRIAL REGISTRY DETAILS</div>
-                <div>FOUNDER: ENGR. GREGORIO A. LACAY</div>
-                <div>SCOPE: ARCHITECTURAL, FINISHING, STRUCTURAL, ELECTRICAL & PLUMBING</div>
+              <div className="pt-2 text-left">
+                <a
+                  href="https://drive.google.com/file/d/17fBWhPV7siUd14L9xyX0LCHIigoNxgiX/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center bg-industrial-red hover:bg-industrial-red-hover text-white border-2 border-black font-display font-black py-3 px-6 rounded-none transition-all duration-300 shadow-[4px_4px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0 uppercase text-xs tracking-wider cursor-pointer"
+                >
+                  Company Profile
+                </a>
               </div>
             </div>
 
@@ -271,50 +274,6 @@ export default function About({ onScrollToSection }: AboutProps) {
         </div>
       </section>
 
-      {/* SECTION 1: HOW WE BUILD */}
-      <section className="py-16 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left Column Custom Framed Image */}
-            <div className="lg:col-span-6">
-              <div className="border border-black p-3 bg-white shadow-[8px_8px_0px_#111111]">
-                <div className="aspect-16/10 bg-gray-50 overflow-hidden border border-gray-100">
-                  <img 
-                    src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAEEZMoPkiHPX-7DaQKjl2gXukLBQVDueYqKL6g_k1yUpvdlt-K8Tmh405-fMtGPCtIXHXZKrC2vkGFCWc0EJknndyEgOHg-PfjiiHa7Pz5ZrpXNB2t3bC2vVYvN89bycae8zFcS3jg-DT5c=s1360-w1360-h1020-rw" 
-                    alt="Active on-site J/G engineering finishing operations" 
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover block" 
-                  />
-                </div>
-                <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-gray-400">
-                  <span>MGT_LOG_9021 // SEC_B</span>
-                  <span>OPERATIONAL COMPLIANCE ESTABLISHED [✔]</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column Text */}
-            <div className="lg:col-span-6 text-left">
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-3">
-                OUR MANAGEMENT TEAM // SOLID PROFESSIONAL BACKGROUNDS
-              </span>
-              <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-black tracking-tight leading-tight mb-6">
-                Expert Project Managers.<br/>Hands-On Operational Touch.
-              </h2>
-              <p className="font-sans text-gray-600 text-sm leading-relaxed mb-6">
-                <strong>J/G Construction Services</strong> is ably supported by a team of professionals and operating managers who have solid backgrounds in construction. Our management team is comprised not only of certified professionals with prestigious corporate credentials, but also hands-on, dedicated project builders who bring a highly personal touch, extreme technical precision, and absolute structural compliance to all projects that they handle.
-              </p>
-              <div className="p-4 bg-gray-50 border border-gray-200 font-mono text-xs text-black space-y-1">
-                <div className="font-bold text-engineering-blue">// MANAGEMENT REGISTRY</div>
-                <div>KEY OFFICERS: GENERAL FOREMAN, TRADE FOREMEN, CIVIL ENGINEERS</div>
-                <div>OPERATIONAL METHODOLOGY: RIGOROUS SITE VISITS & DIRECT SUPERVISION</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* SECTION 2: WHAT WE BUILD */}
       <section className="py-16 bg-white border-b border-gray-100">
@@ -322,9 +281,6 @@ export default function About({ onScrollToSection }: AboutProps) {
           
           <div className="border-b border-black pb-6 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
             <div className="text-left">
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-1">
-                Sectors of Operation
-              </span>
               <h2 className="font-display font-black text-3xl text-black tracking-tight">
                 Diverse Technical Expertise
               </h2>
@@ -366,10 +322,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                     </h3>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between font-mono text-[10px] text-black font-bold">
-                    <span className="text-gray-400 group-hover:text-engineering-blue transition-colors">
-                      STRUCTURAL_ASSURE_OK
-                    </span>
+                  <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-end font-mono text-[10px] text-black font-bold">
                     <div className="flex items-center gap-1 group-hover:text-industrial-red transition-colors text-xs">
                       <span>Details</span>
                       <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
@@ -468,9 +421,6 @@ export default function About({ onScrollToSection }: AboutProps) {
 
             {/* Right Value Stack Column */}
             <div className="lg:col-span-7 text-left order-1 lg:order-2 flex flex-col justify-between py-1">
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-3">
-                OUR QUALITY POLICY // SATISFACTION EARNED
-              </span>
               <h2 className="font-display font-black text-3xl text-black tracking-tight leading-tight mb-4">
                 We Commit to Quality and Customer Satisfaction
               </h2>
@@ -509,9 +459,6 @@ export default function About({ onScrollToSection }: AboutProps) {
           
           <div className="border-b border-black pb-6 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
             <div className="text-left">
-              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-1">
-                Compliance & Licensing
-              </span>
               <h2 className="font-display font-black text-3xl text-black tracking-tight">
                 Certifications and Licenses
               </h2>
@@ -722,9 +669,6 @@ export default function About({ onScrollToSection }: AboutProps) {
             
             {/* Column Text */}
             <div>
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-2">
-                LET'S PARTNER // ESTIMATE REVIEW
-              </span>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-black leading-tight uppercase animate-pulse-slow">
                 Ready to work together?
               </h2>

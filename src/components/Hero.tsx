@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, ChevronRight, FileCode2, Send, CheckCircle } from 'lucide-react';
+import { ShieldCheck, ChevronRight, FileCode2, Send, CheckCircle, Mail, Phone, MapPin } from 'lucide-react';
 import { dataStore } from '../utils/dataStore';
 
 interface HeroProps {
@@ -20,7 +20,11 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<{ name: string; size: string; type: string; dataUrl: string }[]>([]);
+  const [dragActive, setDragActive] = useState(false);
+  
   const fullNameRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +35,16 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
 
     setLoading(true);
     setTimeout(() => {
+      const attachmentsText = selectedFiles.length > 0 
+        ? "\n" + selectedFiles.map(f => `[Uploaded Attachment: ${f.name} (${f.size})]`).join("\n")
+        : "";
       dataStore.addLead({
         fullName: formData.fullName,
         companyEmail: formData.companyEmail,
         phone: formData.phone || "N/A",
-        projectScope: formData.projectScope,
-        serviceCategory: formData.serviceCategory
+        projectScope: formData.projectScope + attachmentsText,
+        serviceCategory: formData.serviceCategory,
+        attachments: selectedFiles
       });
       setLoading(false);
       setSubmitted(true);
@@ -52,6 +60,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
       companyName: "",
       serviceCategory: ""
     });
+    setSelectedFiles([]);
     setSubmitted(false);
   };
 
@@ -65,7 +74,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
   return (
     <section 
       id="hero-section"
-      className="relative min-h-[90vh] pt-32 sm:pt-40 pb-16 flex items-center bg-white overflow-hidden"
+      className="relative min-h-[90vh] pt-36 sm:pt-44 pb-20 flex items-center bg-white overflow-hidden"
     >
       {/* Background Image Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -86,72 +95,83 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
       }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
           
-          {/* Left Column (Left Split): Content Block */}
-          <div className="w-full lg:w-[55%] flex flex-col text-left">
-            
-            <div className="inline-flex items-center gap-2 mb-6 self-start">
-              <div className="h-1 w-6 bg-engineering-blue rounded-full" />
-              <span className="font-mono text-xs font-bold text-engineering-blue tracking-widest uppercase">
-                PRECISE ENGINEERING. UNCOMPROMISED DELIVERY.
+          {/* Left Column: SECURE FIELD ESTIMATING PIPELINE */}
+          <div className="lg:col-span-4 pt-4 text-left">
+            <div>
+              <span className="font-mono text-xs font-black text-industrial-red uppercase tracking-widest block mb-4">
+                SECURE FIELD ESTIMATING PIPELINE
               </span>
-            </div>
-
-            <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[1.1] mb-6 text-left uppercase">
-              Precision Engineering. <br />
-              <span className="text-industrial-red">Zero Guesswork.</span>
-            </h1>
-
-            <p className="text-[#4b5563] text-base sm:text-lg leading-relaxed mb-8 font-sans max-w-xl">
-              We bridge the gap between complex blueprints and flawless execution with disciplined, high-precision structural design and management.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-start items-stretch sm:items-center">
-              <button
-                onClick={onGetStarted}
-                className="bg-industrial-red hover:bg-industrial-red-hover text-white font-display font-bold py-4 px-8 rounded-none transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-center shadow-[4px_4px_0px_#111111] active:shadow-[0px_0px_0px_#111111] border-2 border-black cursor-pointer flex items-center justify-center gap-2"
-              >
-                Schedule a Consultation
-                <ChevronRight className="h-4 w-4" />
-              </button>
               
-              <a
-                href="https://drive.google.com/file/d/17fBWhPV7siUd14L9xyX0LCHIigoNxgiX/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white hover:bg-gray-50 text-black border-2 border-black font-display font-bold py-4 px-8 rounded-none transition-all duration-300 text-center cursor-pointer inline-flex items-center justify-center shadow-[4px_4px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Company Profile
-              </a>
+              <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-black mb-6 leading-tight uppercase">
+                Let's Build Something Uncompromising.
+              </h2>
+              
+              <p className="font-sans text-gray-600 text-sm sm:text-base leading-relaxed mb-8">
+                Submit your blueprints, draft specifications, or structural concerns via our secure, high-integrity pipeline. Our licensed structural civil engineers evaluate metrics and correspond with detailed estimations within 2 business hours.
+              </p>
             </div>
 
-            {/* Quick trust metrics */}
-            <div className="mt-12 pt-8 border-t border-gray-100 grid grid-cols-3 gap-6">
-              <div>
-                <span className="block font-display font-extrabold text-2xl sm:text-3xl text-black">100%</span>
-                <span className="text-xs font-mono text-gray-500 uppercase tracking-wider">Zero-Defect Record</span>
+            {/* Verified Contact Meta Information Cards */}
+            <div className="space-y-6 pt-6 border-t border-gray-200">
+              
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-gray-50 border border-gray-200 text-black shrink-0">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
+                    DIRECT DIGITAL DISPATCH
+                  </span>
+                  <a 
+                    href="mailto:jgconstruction880@gmail.com" 
+                    className="font-display font-bold text-sm sm:text-base text-black hover:text-[#D41D1D] transition-colors font-sans"
+                  >
+                    jgconstruction880@gmail.com
+                  </a>
+                </div>
               </div>
-              <div>
-                <span className="block font-display font-extrabold text-2xl sm:text-3xl text-black">130+</span>
-                <span className="text-xs font-mono text-gray-500 uppercase tracking-wider">Licensed Workers</span>
-              </div>
-              <div>
-                <span className="block font-display font-extrabold text-2xl sm:text-3xl text-black">20+</span>
-                <span className="text-xs font-mono text-gray-500 uppercase tracking-wider">Completed Projects</span>
-              </div>
-            </div>
 
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-gray-50 border border-gray-200 text-black shrink-0">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
+                    REGIONAL SITE OFFICE HOTLINE
+                  </span>
+                  <a 
+                    href="tel:+639453087399" 
+                    className="font-display font-bold text-sm sm:text-base text-black hover:text-[#1B49B8] transition-colors font-sans"
+                  >
+                    (+63) 945 308 7399
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-gray-50 border border-gray-200 text-black shrink-0">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
+                    HQ DESIGN & CONTRACTING SUITE
+                  </span>
+                  <p className="font-sans text-xs sm:text-sm text-gray-700 font-medium">
+                    Lot 8, Block 6, Legian 2D Subdivision, Carsadang Bago I, Imus City, Cavite, Philippines
+                  </p>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          {/* Right Column (Right Split): High-Contrast Technical Form Box */}
-          <div className="w-full lg:w-[45%] bg-white border-2 border-black p-6 sm:p-8 relative shadow-[8px_8px_0px_#1B49B8] mt-4 lg:mt-0">
-            <div className="absolute top-2.5 right-3 text-gray-300 font-mono text-[9px] select-none pointer-events-none">
-              JG_VAL_FORM_V26
-            </div>
+          {/* Right Column: High-Contrast Technical Form Box */}
+          <div className="lg:col-span-8 w-full bg-white border-2 border-black p-6 sm:p-8 relative shadow-[8px_8px_0px_#1B49B8] flex flex-col">
 
             {submitted ? (
-              <div className="py-12 px-4 text-center flex flex-col items-center justify-center">
+              <div className="py-12 px-4 text-center flex flex-col items-center justify-center h-full">
                 <div className="p-4 bg-green-50 border-2 border-green-500 rounded-full text-green-600 mb-6">
                   <CheckCircle className="h-10 w-10" />
                 </div>
@@ -165,14 +185,36 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 </p>
 
                 <div className="bg-[#fafafa] border border-black p-4 w-full text-left font-mono text-xs text-black mb-8 overflow-x-auto max-w-sm mx-auto">
-                  <div className="text-gray-400 font-bold">// JG_LEDGER_RECEIPT //</div>
+                  <div className="text-black font-black">JG_LEDGER_RECEIPT</div>
                   <div className="mt-2">CLIENT: <span className="font-bold">{formData.fullName}</span></div>
                   <div>EMAIL: {formData.companyEmail}</div>
                   <div>PHONE: {formData.phone}</div>
                   {formData.fullName.length > 0 && (
                     <div>ROUTE_STAMP: JG_{formData.fullName.substring(0,3).toUpperCase()}_0226</div>
                   )}
-                  <div className="text-industrial-red font-black mt-2">STATUS: SECURE_ESTIMATING_QUEUE</div>
+                  {selectedFiles.length > 0 && (
+                    <div className="text-gray-700 space-y-0.5">
+                      <div className="font-bold">// ATTACHMENTS ({selectedFiles.length}):</div>
+                      {selectedFiles.map((f, idx) => (
+                        <div key={idx} className="truncate pl-3 text-[11px]">- {f.name}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                 <div className="flex flex-col sm:flex-row gap-3 w-full justify-center max-w-sm mb-4">
+                  <a
+                    href="tel:+639453087399"
+                    className="flex-1 flex items-center justify-center gap-2 text-[#1B49B8] bg-white hover:bg-blue-50/50 border border-[#1B49B8] font-display font-bold px-4 py-3 rounded-none transition-colors cursor-pointer text-xs uppercase tracking-widest text-center"
+                  >
+                    <Phone className="h-4 w-4" /> Call Us
+                  </a>
+                  <a
+                    href="mailto:jgconstruction880@gmail.com"
+                    className="flex-1 flex items-center justify-center gap-2 text-industrial-red bg-white hover:bg-red-50/50 border border-industrial-red font-display font-bold px-4 py-3 rounded-none transition-colors cursor-pointer text-xs uppercase tracking-widest text-center"
+                  >
+                    <Mail className="h-4 w-4" /> Email Us
+                  </a>
                 </div>
 
                 <button
@@ -184,14 +226,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 text-left">
-                <span className="font-mono text-[10px] font-black text-industrial-red uppercase tracking-widest block mb-1">
-                  SECURE ESTIMATING PIPELINE // ONLINE CONSOLE
-                </span>
-                <h3 className="font-display font-bold text-lg text-black uppercase leading-none pb-2 border-b border-gray-100">
-                  Request a Quote
-                </h3>
-
+              <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between text-left space-y-4">
                 {/* 2 per row grid for details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -268,19 +303,118 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                   </div>
                 </div>
 
-                <div>
+                <div className="flex-1 flex flex-col min-h-[120px]">
                   <label htmlFor="projectScope" className="block text-[10px] font-mono font-black text-black uppercase tracking-wider mb-1.5">
                     Project Scope & Structural Requirements <span className="text-industrial-red">*</span>
                   </label>
                   <textarea
                     id="projectScope"
                     required
-                    rows={3}
                     value={formData.projectScope}
                     onChange={(e) => setFormData({ ...formData, projectScope: e.target.value })}
-                    className="w-full bg-white border border-black px-3 py-2 text-sm rounded-none focus:outline-none focus:ring-2 focus:ring-[#1B49B8] text-black placeholder-gray-400 font-sans resize-y"
+                    className="flex-1 min-h-[100px] w-full bg-white border border-black px-3 py-2 text-sm rounded-none focus:outline-none focus:ring-2 focus:ring-[#1B49B8] text-black placeholder-gray-400 font-sans resize-y"
                     placeholder="Describe specific structural targets, materials needed, load metrics..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-mono font-black text-black uppercase tracking-wider mb-1.5">
+                    Upload Blueprints / Files <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragActive(true);
+                    }}
+                    onDragLeave={() => setDragActive(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragActive(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        const filesArray = Array.from(e.dataTransfer.files) as File[];
+                        filesArray.forEach((file: File) => {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setSelectedFiles(prev => [...prev, {
+                              name: file.name,
+                              size: (file.size / 1024).toFixed(1) + " KB",
+                              type: file.type,
+                              dataUrl: reader.result as string
+                            }]);
+                          };
+                          reader.readAsDataURL(file);
+                        });
+                      }
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed p-4 text-center cursor-pointer transition-colors ${
+                      dragActive 
+                        ? "border-[#1B49B8] bg-blue-50/30" 
+                        : "border-gray-300 hover:border-black bg-[#fafafa]"
+                    }`}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      multiple
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          const filesArray = Array.from(e.target.files) as File[];
+                          filesArray.forEach((file: File) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setSelectedFiles(prev => [...prev, {
+                                name: file.name,
+                                size: (file.size / 1024).toFixed(1) + " KB",
+                                type: file.type,
+                                dataUrl: reader.result as string
+                              }]);
+                            };
+                            reader.readAsDataURL(file);
+                          });
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    {selectedFiles.length > 0 ? (
+                      <div className="space-y-2 animate-fade-in" onClick={(e) => e.stopPropagation()}>
+                        <div className="text-left font-mono text-[10px] text-gray-400 uppercase font-black tracking-widest">// SELECTED FILES ({selectedFiles.length}):</div>
+                        {selectedFiles.map((file, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-left bg-white border border-black p-2">
+                            <div className="flex items-center gap-2 overflow-hidden mr-2">
+                              <span className="font-mono text-xs font-bold text-gray-500 shrink-0">#{(idx+1)}:</span>
+                              <span className="font-sans text-xs text-black font-semibold truncate max-w-[200px]" title={file.name}>
+                                {file.name}
+                              </span>
+                              <span className="font-mono text-[9px] text-gray-400 shrink-0">({file.size})</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
+                              }}
+                              className="text-industrial-red hover:text-red-700 font-mono text-[10px] uppercase font-black tracking-widest px-2 cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                        <div className="font-mono text-[9px] text-gray-400 uppercase font-black tracking-widest text-center mt-2 hover:text-black transition-colors">
+                          + Drag & drop or <span className="text-[#1B49B8] underline cursor-pointer" onClick={() => fileInputRef.current?.click()}>add more files</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <div className="font-mono text-[10px] text-gray-400 uppercase font-black tracking-widest">
+                          Drag and drop blueprints or <span className="text-[#1B49B8] underline">browse files</span>
+                        </div>
+                        <p className="font-sans text-[10px] text-gray-500">
+                          Supports PDF, CAD, DWG, PNG, or JPG (Max 25MB)
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <button

@@ -43,6 +43,8 @@ import { isSupabaseConfigured, supabase } from '../utils/supabaseClient';
 import RichTextEditor from './RichTextEditor';
 import SgLogo from './SgLogo';
 import ProjectShowcasePage from './ProjectShowcasePage';
+// @ts-ignore
+import * as mammoth from 'mammoth';
 
 interface AdminPortalProps {
   onScrollToSection: (id: string) => void;
@@ -138,6 +140,112 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
 
   // Detailed Modal Viewing states
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
+  const [previewFile, setPreviewFile] = useState<{ name: string; size: string; type?: string; dataUrl?: string } | null>(null);
+  const [docxHtml, setDocxHtml] = useState<string>("");
+  const [docxLoading, setDocxLoading] = useState<boolean>(false);
+  const [previewBlobUrl, setPreviewBlobUrl] = useState<string>("");
+
+  const dataURLtoBlob = (dataUrl: string): Blob => {
+    try {
+      const arr = dataUrl.split(',');
+      if (arr.length < 2) throw new Error("Invalid data URL");
+      const mimeMatch = arr[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : '';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    } catch (e: any) {
+      console.error("dataURLtoBlob error:", e);
+      return new Blob([], { type: 'application/octet-stream' });
+    }
+  };
+
+  useEffect(() => {
+    if (!previewFile || !previewFile.dataUrl) {
+      setPreviewBlobUrl("");
+      return;
+    }
+    try {
+      const blob = dataURLtoBlob(previewFile.dataUrl);
+      const url = URL.createObjectURL(blob);
+      setPreviewBlobUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } catch (e) {
+      console.error("Failed to create blob URL:", e);
+      setPreviewBlobUrl(previewFile.dataUrl);
+    }
+  }, [previewFile]);
+
+  useEffect(() => {
+    if (!previewFile) {
+      setDocxHtml("");
+      return;
+    }
+
+    const isDocx = previewFile.name.match(/\.(docx)$/i) || previewFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    const isDoc = previewFile.name.match(/\.doc$/i);
+
+    if (isDoc) {
+      setDocxHtml(`
+        <div class="p-4 border-2 border-dashed border-red-300 bg-red-50 text-red-800 text-sm font-sans flex flex-col items-center gap-3 text-center">
+          <p class="font-bold">⚠️ LEGACY WORD DOCUMENT DETECTED (.DOC)</p>
+          <p class="text-xs text-red-700 max-w-md">
+            Legacy Microsoft Word (.doc) files cannot be rendered directly in the browser's dynamic preview.
+            Please download the original asset below to view its full formatting and contents.
+          </p>
+        </div>
+      `);
+      return;
+    }
+
+    if (isDocx && previewFile.dataUrl) {
+      setDocxLoading(true);
+      setDocxHtml("");
+      
+      try {
+        const blob = dataURLtoBlob(previewFile.dataUrl);
+        blob.arrayBuffer()
+          .then(arrayBuffer => {
+            return mammoth.convertToHtml({ arrayBuffer });
+          })
+          .then(result => {
+            setDocxHtml(result.value || "<p class='text-gray-500 font-mono'>// Document is empty.</p>");
+          })
+          .catch(err => {
+            console.error("Error rendering docx:", err);
+            setDocxHtml(`<p class='text-red-500 font-mono'>// Error rendering document content: ${err?.message || err}</p>`);
+          })
+          .finally(() => {
+            setDocxLoading(false);
+          });
+      } catch (err: any) {
+        console.error("Error decoding arrayBuffer:", err);
+        setDocxHtml(`<p class='text-red-500 font-mono'>// Error decoding file content: ${err?.message || err}</p>`);
+        setDocxLoading(false);
+      }
+    }
+  }, [previewFile]);
+
+  const getCleanScope = (scope: string) => {
+    if (!scope) return "";
+    let clean = scope;
+    const startTag = "---ATTACHMENTS_JSON_START---";
+    const startIndex = clean.indexOf(startTag);
+    if (startIndex !== -1) {
+      clean = clean.substring(0, startIndex).trim();
+    }
+    return clean
+      .split("\n")
+      .filter(line => !line.trim().startsWith("[Uploaded Attachment:"))
+      .join("\n")
+      .trim();
+  };
   const [viewingProject, setViewingProject] = useState<Project | null>(null);
   const [previewProjectDetails, setPreviewProjectDetails] = useState<Project | null>(null);
 
@@ -743,11 +851,13 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
 
     const isOngoing = projectToSave.status === 'Ongoing';
     if (isOngoing) {
-      projectToSave.completedYear = 'Ongoing';
-      projectToSave.scope = projectToSave.scope || 'Ongoing Project';
+      projectToSave.completedYear = projectToSave.completedYear || 'Ongoing';
     }
+    
+    // Auto-set scope field so database model integrity is preserved
+    projectToSave.scope = projectToSave.scope || 'J/G Certified Scope';
 
-    if (!projectToSave.title || !projectToSave.location || !projectToSave.scope || !projectToSave.description) {
+    if (!projectToSave.title || !projectToSave.location || !projectToSave.description) {
       triggerAlert('REQUISITION ERROR', 'Required parameters missing. Please inspect structural fields.');
       return;
     }
@@ -1357,7 +1467,12 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
             {/* Top Branding Section */}
             <div className="p-5 border-b border-black">
               <div className="flex items-center gap-3">
-                <SgLogo className="h-11 w-11 shrink-0" />
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1TztSWdzD5w6pHrnNZUMhsRde0r2ncMtz"
+                  alt="J/G Logo"
+                  className="h-11 w-11 shrink-0 object-contain"
+                  referrerPolicy="no-referrer"
+                />
                 <div>
                   <span className="font-mono text-[9px] text-black font-black block uppercase tracking-widest leading-none mb-1">
                     [SECURE SYSTEM]
@@ -1470,7 +1585,12 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
             {/* Mobile Header Bar */}
             <div className="lg:hidden w-full bg-white border-b border-black p-4 flex items-center justify-between z-30 shrink-0">
               <div className="flex items-center gap-3">
-                <SgLogo className="h-8 w-8 shrink-0" />
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1TztSWdzD5w6pHrnNZUMhsRde0r2ncMtz"
+                  alt="J/G Logo"
+                  className="h-8 w-8 shrink-0 object-contain"
+                  referrerPolicy="no-referrer"
+                />
                 <h2 className="font-display font-black text-xs tracking-tight text-black uppercase">
                   J/G CONTROL DESK
                 </h2>
@@ -1898,7 +2018,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                                 </span>
                               </div>
                               <p className="font-mono text-[10px] text-gray-600 line-clamp-2 leading-relaxed pt-0.5">
-                                {l.projectScope}
+                                {getCleanScope(l.projectScope)}
                               </p>
                               <div className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                 <Eye className="h-3 w-3" />
@@ -2219,7 +2339,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                           <th className="p-4 border-r border-gray-800 w-44">Client Name</th>
                           <th className="p-4 border-r border-gray-800 w-48">Company Email</th>
                           <th className="p-4 border-r border-gray-800 w-36">Phone Number</th>
-                          <th className="p-4 border-r border-gray-800">Assigned Sector & Scope Summary</th>
+                          <th className="p-4 border-r border-gray-800">Assigned Sector & Project Scope / Structural Requirements</th>
                           <th className="p-4 border-r border-gray-800 w-36">Status</th>
                           <th className="p-4 w-32 text-center">Dispatch</th>
                         </tr>
@@ -2294,14 +2414,22 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
 
                               {/* Category & Scope Preview */}
                               <td className="p-4 border-r border-gray-200 align-top space-y-1.5 max-w-[280px]">
-                                {lead.serviceCategory && (
-                                  <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-[#1B49B8] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider">
-                                    <Layers className="h-2.5 w-2.5 shrink-0" />
-                                    <span>{lead.serviceCategory}</span>
-                                  </span>
-                                )}
-                                <p className="font-sans text-[11px] text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap block" title={lead.projectScope}>
-                                  {lead.projectScope.length > 45 ? lead.projectScope.substring(0, 45) + "..." : lead.projectScope}
+                                <div className="flex flex-wrap gap-1">
+                                  {lead.serviceCategory && (
+                                    <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-[#1B49B8] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider">
+                                      <Layers className="h-2.5 w-2.5 shrink-0" />
+                                      <span>{lead.serviceCategory}</span>
+                                    </span>
+                                  )}
+                                  {lead.attachments && lead.attachments.length > 0 && (
+                                    <span className="inline-flex items-center gap-1 bg-purple-50 border border-purple-200 text-purple-700 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider">
+                                      <FileText className="h-2.5 w-2.5 shrink-0" />
+                                      <span>{lead.attachments.length} Files</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="font-sans text-[11px] text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap block" title={getCleanScope(lead.projectScope)}>
+                                  {getCleanScope(lead.projectScope).length > 45 ? getCleanScope(lead.projectScope).substring(0, 45) + "..." : getCleanScope(lead.projectScope)}
                                 </p>
                               </td>
 
@@ -3371,11 +3499,60 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
               </div>
 
               <div className="space-y-1.5">
-                <span className="font-mono text-[9px] text-gray-400 block uppercase font-bold">// Dynamic Project Scope:</span>
+                <span className="font-mono text-[9px] text-gray-400 block uppercase font-bold">// Project Scope & Structural Requirements:</span>
                 <div className="font-sans text-sm sm:text-base text-black border-l-2 border-black pl-3 py-2 bg-gray-50/50 leading-relaxed max-h-96 overflow-y-auto whitespace-pre-wrap break-words w-full">
-                  {viewingLead.projectScope}
+                  {getCleanScope(viewingLead.projectScope)}
                 </div>
               </div>
+
+              {viewingLead.attachments && viewingLead.attachments.length > 0 && (
+                <div className="space-y-2.5 pt-2 border-t border-black/5">
+                  <span className="font-mono text-[9px] text-[#1B49B8] block uppercase font-bold tracking-wider">// ATTACHED SPECIFICATIONS & BLUEPRINTS ({viewingLead.attachments.length} FILES):</span>
+                  <div className="flex flex-col gap-2">
+                    {viewingLead.attachments.map((file, idx) => {
+                      const isImage = file.type?.startsWith("image/") || file.name.match(/\.(png|jpe?g|gif|webp)$/i);
+                      return (
+                        <div key={idx} className="border border-black p-2.5 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                          <div className="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
+                            {isImage && file.dataUrl ? (
+                              <img src={file.dataUrl} className="w-10 h-10 object-cover border border-black shrink-0" alt={file.name} />
+                            ) : (
+                              <div className="w-10 h-10 bg-gray-100 border border-black flex items-center justify-center font-mono text-[10px] font-black shrink-0 text-gray-500 uppercase">
+                                {file.name.split('.').pop()?.substring(0, 3) || "FILE"}
+                              </div>
+                            )}
+                            <div className="truncate text-left min-w-0">
+                              <div className="font-sans font-extrabold text-black truncate text-xs sm:text-sm" title={file.name}>{file.name}</div>
+                              <div className="font-mono text-[9px] text-gray-400 mt-0.5">{file.size} • <span className="uppercase text-gray-500">{file.type || "Unknown Format"}</span></div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewFile(file)}
+                              className="bg-black hover:bg-gray-800 text-white font-mono text-[9px] uppercase font-bold tracking-wider px-3 py-1.5 text-center cursor-pointer transition-colors border border-black"
+                            >
+                              View Content
+                            </button>
+                            {file.dataUrl ? (
+                              <a 
+                                href={file.dataUrl} 
+                                download={file.name}
+                                className="bg-white hover:bg-gray-50 text-black border border-black font-mono text-[9px] uppercase font-bold tracking-wider px-3 py-1.5 text-center cursor-pointer transition-colors"
+                              >
+                                Download
+                              </a>
+                            ) : (
+                              <span className="text-gray-400 font-mono text-[8px] uppercase font-bold tracking-widest px-2.5">Saved</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-2 justify-end pt-3 border-t border-black/10">
                 <button 
@@ -3430,11 +3607,11 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                             category: viewingLead.serviceCategory || 'Structural Design',
                             location: '',
                             image: '/assets/images/industrial_retrofit_1780500246965.png',
-                            scope: viewingLead.projectScope,
+                            scope: getCleanScope(viewingLead.projectScope),
                             client: viewingLead.fullName,
                             completedYear: '2026',
                             complianceRatio: '100% Code Safety Certified',
-                            description: viewingLead.projectScope,
+                            description: getCleanScope(viewingLead.projectScope),
                             status: 'Completed'
                           });
                           handleUpdateLeadStatus(viewingLead.id, 'Reviewed');
@@ -3710,22 +3887,20 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                     />
                   </div>
 
-                  {!isOngoingMode && (
-                    <div>
-                      <label className="block font-mono text-[10px] font-bold uppercase mb-1">Completed Year / Calendar Stamp</label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="e.g. 2026, Ongoing"
-                        value={editingProject ? editingProject.completedYear : newProject.completedYear}
-                        onChange={(e) => {
-                          if (editingProject) setEditingProject({ ...editingProject, completedYear: e.target.value });
-                          else setNewProject({ ...newProject, completedYear: e.target.value });
-                        }}
-                        className="bg-white border border-black w-full px-3 py-2 text-xs font-mono"
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold uppercase mb-1">Completed Year / Calendar Stamp</label>
+                    <input 
+                      type="text"
+                      required
+                      placeholder="e.g. 2026, Ongoing"
+                      value={editingProject ? editingProject.completedYear : newProject.completedYear}
+                      onChange={(e) => {
+                        if (editingProject) setEditingProject({ ...editingProject, completedYear: e.target.value });
+                        else setNewProject({ ...newProject, completedYear: e.target.value });
+                      }}
+                      className="bg-white border border-black w-full px-3 py-2 text-xs font-mono"
+                    />
+                  </div>
 
                   <div>
                     <label className="block font-mono text-[10px] font-bold uppercase mb-1">Operation Status</label>
@@ -3742,7 +3917,6 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                     </select>
                   </div>
 
-                  {!isOngoingMode && (
                     <div className="md:col-span-2 border border-black p-4 bg-gray-100 flex flex-col md:flex-row items-stretch gap-4 min-w-0 w-full">
                       {/* Image preview box */}
                       <div className="shrink-0 w-28 h-28 border border-black bg-white flex items-center justify-center relative overflow-hidden select-none">
@@ -3825,10 +3999,9 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                         </div>
                       </div>
                     </div>
-                  )}
 
                   {/* Displaying Uploaded Gallery Items */}
-                  {!isOngoingMode && ((editingProject ? editingProject.images : newProject.images) || []).length > 0 && (
+                  {((editingProject ? editingProject.images : newProject.images) || []).length > 0 && (
                     <div className="md:col-span-2 border-2 border-black p-4 bg-gray-50 space-y-3 min-w-0 w-full">
                       <div className="flex items-center justify-between gap-2 border-b border-black pb-2">
                         <span className="block font-mono text-[10px] text-black font-black uppercase tracking-widest">// UPLOADED SCHEMATICS GALLERY ({((editingProject ? editingProject.images : newProject.images) || []).length} ASSETS)</span>
@@ -3901,31 +4074,16 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                     </div>
                   )}
 
-                  {!isOngoingMode && (
-                    <div className="md:col-span-2">
-                      <RichTextEditor 
-                        label="Core Deliverable Scope description"
-                        placeholder="Deliverable details and scope components..."
-                        value={editingProject ? editingProject.scope : newProject.scope}
-                        onChange={(val) => {
-                          if (editingProject) setEditingProject({ ...editingProject, scope: val });
-                          else setNewProject({ ...newProject, scope: val });
-                        }}
-                        rows={3}
-                      />
-                    </div>
-                  )}
-
                   <div className="md:col-span-2">
                     <RichTextEditor 
-                      label={isOngoingMode ? "Short Project Description" : "Profile Specifications Description"}
-                      placeholder={isOngoingMode ? "Enter short project description..." : "General case study details or engineering problems solved..."}
+                      label="Project Scope & Details"
+                      placeholder="Detailed overview of project scope, engineering solutions, and case study details..."
                       value={editingProject ? editingProject.description : newProject.description}
                       onChange={(val) => {
                         if (editingProject) setEditingProject({ ...editingProject, description: val });
                         else setNewProject({ ...newProject, description: val });
                       }}
-                      rows={5}
+                      rows={6}
                     />
                   </div>
 
@@ -3950,6 +4108,170 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                   </div>
 
                 </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {previewFile && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 sm:p-6"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className="w-full max-w-4xl h-[85vh] bg-white border-2 border-black shadow-[8px_8px_0px_#111111] flex flex-col overflow-hidden text-left"
+            >
+              {/* Header */}
+              <div className="bg-black text-white p-4 flex items-center justify-between border-b-2 border-black shrink-0">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="p-1.5 bg-industrial-red shrink-0 text-white">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="font-mono text-[9px] text-gray-400 block uppercase tracking-widest leading-none mb-1">
+                      FILE PREVIEWER PROTOCOL // LEAD ATTACHMENT
+                    </span>
+                    <h3 className="font-display font-black text-sm sm:text-base truncate uppercase tracking-tight text-white" title={previewFile.name}>
+                      {previewFile.name}
+                    </h3>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setPreviewFile(null)}
+                  className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  title="Close Preview"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+
+              {/* Subheader File Stats */}
+              <div className="bg-gray-100 border-b border-black px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono shrink-0 uppercase">
+                <div className="text-gray-500">
+                  FILE_SIZE: <strong className="text-black">{previewFile.size}</strong> • FORMAT: <strong className="text-black">{previewFile.type || "UNKNOWN"}</strong>
+                </div>
+                {(previewBlobUrl || previewFile.dataUrl) && (
+                  <a 
+                    href={previewBlobUrl || previewFile.dataUrl} 
+                    download={previewFile.name}
+                    className="text-[#1B49B8] hover:underline font-bold"
+                  >
+                    // DOWNLOAD ORIGINAL ASSET
+                  </a>
+                )}
+              </div>
+
+              {/* Contents Area */}
+              <div className="flex-1 overflow-auto bg-gray-50 p-4 sm:p-6 flex flex-col justify-center items-center min-h-0">
+                {(() => {
+                  const isImage = previewFile.type?.startsWith("image/") || previewFile.name.match(/\.(png|jpe?g|gif|webp)$/i);
+                  const isPdf = previewFile.type === "application/pdf" || previewFile.name.match(/\.pdf$/i);
+                  const isText = previewFile.type?.startsWith("text/") || previewFile.name.match(/\.(txt|md|json|csv|xml|ini|log|yaml|yml)$/i);
+                  const isDocx = previewFile.name.match(/\.(docx|doc)$/i) || previewFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+                  if (isImage && (previewBlobUrl || previewFile.dataUrl)) {
+                    return (
+                      <div className="max-w-full max-h-full flex items-center justify-center p-2 bg-white border border-black shadow-xs">
+                        <img 
+                          src={previewBlobUrl || previewFile.dataUrl} 
+                          className="max-w-full max-h-[60vh] object-contain select-none" 
+                          alt={previewFile.name} 
+                        />
+                      </div>
+                    );
+                  }
+
+                  if (isPdf && (previewBlobUrl || previewFile.dataUrl)) {
+                    return (
+                      <div className="w-full h-full border border-black bg-white">
+                        <iframe 
+                          src={previewBlobUrl || previewFile.dataUrl} 
+                          className="w-full h-full min-h-[55vh]" 
+                          title={previewFile.name} 
+                        />
+                      </div>
+                    );
+                  }
+
+                  if (isDocx && previewFile.dataUrl) {
+                    if (docxLoading) {
+                      return (
+                        <div className="flex flex-col items-center justify-center gap-3 p-12 text-center">
+                          <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+                          <p className="font-mono text-xs text-gray-500 uppercase tracking-wider">// DECODING WORD DOCUMENT PROTOCOL...</p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="w-full h-full bg-white text-black p-6 sm:p-10 font-sans overflow-auto border-2 border-black shadow-inner text-left select-text max-w-none docx-prose leading-relaxed">
+                        <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+                      </div>
+                    );
+                  }
+
+                  if (isText && previewFile.dataUrl) {
+                    let textContent = "";
+                    try {
+                      const base64Parts = previewFile.dataUrl.split(',')[1];
+                      if (base64Parts) {
+                        textContent = atob(base64Parts);
+                      } else {
+                        textContent = previewFile.dataUrl;
+                      }
+                    } catch (err) {
+                      textContent = "Unable to decode text. Data URL content may be binary or invalid base64.";
+                    }
+
+                    return (
+                      <div className="w-full h-full bg-black text-[#00ff00] p-4 font-mono text-xs overflow-auto border-2 border-black shadow-inner leading-relaxed text-left rounded-xs">
+                        <pre className="whitespace-pre-wrap break-all select-text">{textContent || "// No readable contents found."}</pre>
+                      </div>
+                    );
+                  }
+
+                  // Fallback for spreadsheets, zip files etc.
+                  return (
+                    <div className="max-w-md bg-white border border-black p-6 text-center space-y-4 shadow-sm">
+                      <div className="w-16 h-16 bg-gray-100 border border-black flex items-center justify-center font-mono text-xl font-black mx-auto text-gray-400 uppercase">
+                        {previewFile.name.split('.').pop()?.substring(0, 4) || "FILE"}
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="font-sans font-black text-sm text-black uppercase">// BINARY_SPECIFICATION_ASSET</h4>
+                        <p className="font-sans text-xs text-gray-500 leading-normal">
+                          This file type (<strong>{previewFile.name.split('.').pop()?.toUpperCase()}</strong>) cannot be rendered natively in your browser preview container.
+                        </p>
+                      </div>
+                      <div className="pt-2">
+                        {(previewBlobUrl || previewFile.dataUrl) ? (
+                          <a 
+                            href={previewBlobUrl || previewFile.dataUrl} 
+                            download={previewFile.name}
+                            className="inline-block bg-black hover:bg-gray-900 text-white font-mono text-[10px] uppercase font-bold tracking-widest px-4 py-2 border border-black transition-colors cursor-pointer"
+                          >
+                            Download to View Content
+                          </a>
+                        ) : (
+                          <span className="text-gray-400 font-mono text-[10px] uppercase font-bold tracking-widest">No download link available</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Footer */}
+              <div className="bg-gray-100 border-t border-black p-3 flex justify-end shrink-0">
+                <button 
+                  onClick={() => setPreviewFile(null)}
+                  className="px-4 py-2 bg-black hover:bg-gray-800 text-white font-mono text-[10px] font-bold uppercase border border-black cursor-pointer transition-colors"
+                >
+                  Close Viewer
+                </button>
               </div>
             </motion.div>
           </motion.div>

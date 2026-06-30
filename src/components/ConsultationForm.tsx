@@ -25,9 +25,6 @@ export default function ConsultationForm({ onScrollToSection }: ConsultationForm
           
           {/* Column Text */}
           <div>
-            <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-2">
-              LET'S PARTNER // ESTIMATE REVIEW
-            </span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-black leading-tight uppercase animate-pulse-slow">
               Ready to work together?
             </h2>

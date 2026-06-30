@@ -183,7 +183,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* SERVICES HERO HEADER */}
-      <section className="relative py-14 border-b border-black overflow-hidden bg-gray-50">
+      <section className="relative py-[81px] border-b border-black overflow-hidden bg-gray-50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -195,14 +195,15 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white" />
         </div>
 
+        {/* Background Subtle Architect Grid Pattern */}
+        <div className="absolute inset-0 z-0 opacity-[0.025] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
+          <div className="flex flex-col gap-4 text-left">
             <div>
-              <div className="inline-flex items-center gap-2 mb-2">
-                <span className="font-mono text-xs font-bold text-[#1B49B8] uppercase tracking-widest">
-                  OUR CAPABILITIES // DETAILED SPECIFICATIONS
-                </span>
-              </div>
               <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
                 Our Services
               </h1>
@@ -226,9 +227,8 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
                 <div className="lg:col-span-6 flex flex-col justify-between">
                   <div>
                     {/* Index designation */}
-                    <div className="font-mono text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-2.5 flex items-center gap-2">
-                      <span className="bg-black text-white px-2 py-0.5">CAPABILITY // 0{idx + 1}</span>
-                      <span className="text-[#D41D1D]">// CORE_VERIFIED</span>
+                    <div className="font-mono text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-2.5">
+                      <span>CAPABILITY // 0{idx + 1}</span>
                     </div>
 
                     <h3 className="font-display font-black text-px sm:text-2xl lg:text-3xl text-black uppercase tracking-tight mb-2">
@@ -250,7 +250,6 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
                 {/* Right Side: Execution Scope Checkpoints */}
                 <div className="lg:col-span-6 border-t-2 border-dashed border-gray-200 pt-8 lg:border-t-0 lg:pt-0 lg:border-l-2 lg:border-dashed lg:pl-8 flex flex-col justify-between">
                   <div className="space-y-4">
-                    <span className="font-mono text-[10px] text-gray-500 font-extrabold tracking-widest uppercase block">// DELIVERABLE MATRIX BLUEPRINT</span>
                     <ul className="space-y-3.5">
                       {service.scopeItems.map((item, key) => (
                         <li key={key} className="flex items-start gap-3 text-xs sm:text-sm text-gray-700 leading-relaxed">
@@ -261,12 +260,6 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
                         </li>
                       ))}
                     </ul>
-                  </div>
-
-                  {/* Industrial Signature */}
-                  <div className="pt-6 font-mono text-[9px] text-gray-400 flex items-center justify-between border-t border-gray-100 mt-8">
-                    <span>SECTOR_VERIFY // SRV-0{idx + 1}</span>
-                    <span className="text-[#1B49B8] font-bold">// COMPLIANCE CHECKED ✔</span>
                   </div>
                 </div>
 
@@ -295,9 +288,6 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
             
             {/* Column Text */}
             <div>
-              <span className="font-mono text-xs font-black text-engineering-blue uppercase tracking-widest block mb-2">
-                LET'S PARTNER // ESTIMATE REVIEW
-              </span>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-black leading-tight uppercase">
                 Ready to work together?
               </h2>

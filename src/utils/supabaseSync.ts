@@ -6,7 +6,9 @@ import {
   DEFAULT_PROJECTS,
   DEFAULT_LEADS,
   DEFAULT_SERVICES,
-  DEFAULT_HISTORICAL_RECORDS
+  DEFAULT_HISTORICAL_RECORDS,
+  serializeLeadAttachments,
+  deserializeLeadAttachments
 } from './dataStore';
 import { HistoricalRecord } from '../types';
 
@@ -565,7 +567,11 @@ export const supabaseSync = {
       const mergedRemote = mergeRemoteWithLocalMutations(tableName, remoteData);
 
       if (mergedRemote.length > 0) {
-        localStorage.setItem(localStorageKey, JSON.stringify(normalizeToCamelCase(mergedRemote)));
+        let normalized = normalizeToCamelCase(mergedRemote);
+        if (tableName === 'leads') {
+          normalized = normalized.map(deserializeLeadAttachments);
+        }
+        localStorage.setItem(localStorageKey, JSON.stringify(normalized));
       } else {
         // Remote table has 0 records. Check if localStorage has records.
         const localRaw = localStorage.getItem(localStorageKey);
@@ -581,7 +587,8 @@ export const supabaseSync = {
           localStorage.setItem(localStorageKey, JSON.stringify(defaultData));
           if (isSupabaseConfigured && supabase) {
             for (const item of defaultData) {
-              await safeUpsert(tableName, item);
+              const serializedItem = tableName === 'leads' ? serializeLeadAttachments(item) : item;
+              await safeUpsert(tableName, serializedItem);
             }
           }
         } else {
@@ -596,7 +603,8 @@ export const supabaseSync = {
           if (isSupabaseConfigured && supabase) {
             try {
               for (const item of localData) {
-                await safeUpsert(tableName, item);
+                const serializedItem = tableName === 'leads' ? serializeLeadAttachments(item) : item;
+                await safeUpsert(tableName, serializedItem);
               }
             } catch (err: any) {
               console.warn(`[Sync] Seeding remote table ${tableName} failed:`, err?.message || err);
@@ -711,12 +719,13 @@ export const supabaseSync = {
 
 
   async pushLead(lead: Lead): Promise<void> {
-    registerLocalMutation('leads', lead.id, 'upsert', lead);
+    const serializedLead = serializeLeadAttachments(lead);
+    registerLocalMutation('leads', lead.id, 'upsert', serializedLead);
     broadcastSyncMutation('leads');
     if (syncStatus.missingTables.includes('leads')) return;
     return runMutation(async () => {
       try {
-        await safeUpsert('leads', lead);
+        await safeUpsert('leads', serializedLead);
       } catch (err: any) {
         console.warn('Error pushing lead to Supabase:', err?.message || err);
       }
