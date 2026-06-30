@@ -263,10 +263,6 @@ export default function About({ onScrollToSection }: AboutProps) {
                     className="w-full h-full object-cover block" 
                   />
                 </div>
-                <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-gray-400">
-                  <span>REG_DRAFT // SEC_A</span>
-                  <span>FOUNDING INTEGRITY CHARTER APPROVED [✔]</span>
-                </div>
               </div>
             </div>
 
@@ -284,9 +280,6 @@ export default function About({ onScrollToSection }: AboutProps) {
               <h2 className="font-display font-black text-3xl text-black tracking-tight">
                 Diverse Technical Expertise
               </h2>
-            </div>
-            <div className="font-mono text-xs text-gray-500">
-              OPERATIONAL_SPECTRUM_MATRIX // [8 KEY PILLARS]
             </div>
           </div>
 
@@ -313,7 +306,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                         <IconComp className="h-6 w-6" />
                       </div>
                       <span className="font-mono text-[10px] text-gray-400 font-bold">
-                        0{idx + 1} // SYS_SVC
+                        [0{idx + 1}]
                       </span>
                     </div>
 
@@ -348,7 +341,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                   OUR MISSION // SERVICE COMMITMENT
                 </span>
                 <h3 className="font-display font-black text-2xl text-black mb-4">
-                  Premium Construction Services
+                  Construction Services
                 </h3>
                 <div className="font-sans text-gray-600 text-sm leading-relaxed space-y-4">
                   <p>
@@ -362,10 +355,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                   </p>
                 </div>
               </div>
-              <div className="border-t border-gray-100 pt-4 mt-8 flex items-center justify-between font-mono text-[10px] text-gray-400">
-                <span>JG_SPEC_MISSION // AUTH_A</span>
-                <span>SYSTEM CORE OK</span>
-              </div>
+              <div className="border-t border-gray-100 pt-4 mt-8"></div>
             </div>
 
             {/* Vision Card */}
@@ -386,10 +376,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                   </p>
                 </div>
               </div>
-              <div className="border-t border-gray-100 pt-4 mt-8 flex items-center justify-between font-mono text-[10px] text-gray-400">
-                <span>JG_SPEC_VISION // AUTH_B</span>
-                <span>SYSTEM TARGET OK</span>
-              </div>
+              <div className="border-t border-gray-100 pt-4 mt-8"></div>
             </div>
 
           </div>
@@ -411,10 +398,6 @@ export default function About({ onScrollToSection }: AboutProps) {
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover" 
                   />
-                </div>
-                <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-gray-500 shrink-0">
-                  <span>WORKMANSHIP_ANALYSIS // CO_STAMP_F5</span>
-                  <span>100% RELIABLE EXECUTION</span>
                 </div>
               </div>
             </div>
@@ -462,9 +445,6 @@ export default function About({ onScrollToSection }: AboutProps) {
               <h2 className="font-display font-black text-3xl text-black tracking-tight">
                 Certifications and Licenses
               </h2>
-            </div>
-            <div className="font-mono text-xs text-gray-500">
-              COMPLIANCE_STANDARDS // REGISTERED_LICENSES
             </div>
           </div>
 
