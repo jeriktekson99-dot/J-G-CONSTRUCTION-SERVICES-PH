@@ -2690,6 +2690,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                         <option value="Commercial Build">Commercial Build</option>
                         <option value="Industrial Frameworks">Industrial Frameworks</option>
                         <option value="Civil Works">Civil Works</option>
+                        <option value="Renovation and Interior Construction">Renovation and Interior Construction</option>
                       </select>
                       <div className="absolute right-3.5 top-1/2 -translate-y-1/2 font-mono text-[9px] pointer-events-none">▼</div>
                     </div>
@@ -3424,7 +3425,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="w-full max-w-lg bg-white border-2 border-black p-6 shadow-[8px_8px_0px_#111111] relative text-left space-y-4 my-auto"
+              className="w-full max-w-2xl bg-white border-2 border-black p-6 shadow-[8px_8px_0px_#111111] relative text-left space-y-4 my-auto"
             >
               <button 
                 onClick={() => setViewingLead(null)}
@@ -3460,8 +3461,8 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                   <span className="text-black font-semibold">{viewingLead.phone || "N/A"}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[9px] uppercase font-bold">Stated Budget:</span>
-                  <span className="text-emerald-800 font-bold">{viewingLead.budget || "Stated estimate"}</span>
+                  <span className="text-gray-400 block text-[9px] uppercase font-bold">Selected Service:</span>
+                  <span className="text-[#1B49B8] font-bold">{viewingLead.serviceCategory || "General Inquiry"}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 block text-[9px] uppercase font-bold">Date Received:</span>
@@ -3554,7 +3555,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-2 justify-end pt-3 border-t border-black/10">
+              <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-end pt-3 border-t border-black/10">
                 <button 
                   type="button"
                   onClick={() => setViewingLead(null)}
@@ -3630,7 +3631,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                         handleUpdateLeadStatus(viewingLead.id, 'Reviewed');
                         setViewingLead(null);
                       }}
-                      className="px-4 py-1.5 bg-black hover:bg-gray-850 text-white font-mono text-[10px] font-bold uppercase border border-black cursor-pointer shadow-[2px_2px_0px_#A3E635]"
+                      className="px-3 py-1.5 bg-gray-50 hover:bg-black hover:text-white text-black font-mono text-[10px] font-bold uppercase border border-black cursor-pointer transition-colors"
                     >
                       Acknowledge & Review
                     </button>
@@ -3854,6 +3855,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                       <option value="Commercial Build">Commercial Build</option>
                       <option value="Industrial Frameworks">Industrial Frameworks</option>
                       <option value="Civil Works">Civil Works</option>
+                      <option value="Renovation and Interior Construction">Renovation and Interior Construction</option>
                     </select>
                   </div>
 
@@ -4124,7 +4126,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="w-full max-w-4xl h-[85vh] bg-white border-2 border-black shadow-[8px_8px_0px_#111111] flex flex-col overflow-hidden text-left"
+              className="w-full max-w-6xl h-[90vh] bg-white border-2 border-black shadow-[8px_8px_0px_#111111] flex flex-col overflow-hidden text-left"
             >
               {/* Header */}
               <div className="bg-black text-white p-4 flex items-center justify-between border-b-2 border-black shrink-0">
@@ -4176,25 +4178,21 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
 
                   if (isImage && (previewBlobUrl || previewFile.dataUrl)) {
                     return (
-                      <div className="max-w-full max-h-full flex items-center justify-center p-2 bg-white border border-black shadow-xs">
-                        <img 
-                          src={previewBlobUrl || previewFile.dataUrl} 
-                          className="max-w-full max-h-[60vh] object-contain select-none" 
-                          alt={previewFile.name} 
-                        />
-                      </div>
+                      <img 
+                        src={previewBlobUrl || previewFile.dataUrl} 
+                        className="max-w-full max-h-full object-contain select-none shadow-xs" 
+                        alt={previewFile.name} 
+                      />
                     );
                   }
 
                   if (isPdf && (previewBlobUrl || previewFile.dataUrl)) {
                     return (
-                      <div className="w-full h-full border border-black bg-white">
-                        <iframe 
-                          src={previewBlobUrl || previewFile.dataUrl} 
-                          className="w-full h-full min-h-[55vh]" 
-                          title={previewFile.name} 
-                        />
-                      </div>
+                      <iframe 
+                        src={previewBlobUrl || previewFile.dataUrl} 
+                        className="w-full h-full min-h-[75vh] border-0" 
+                        title={previewFile.name} 
+                      />
                     );
                   }
 

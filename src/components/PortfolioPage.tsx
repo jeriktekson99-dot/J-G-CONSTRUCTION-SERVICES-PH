@@ -7,7 +7,7 @@ import { dataStore } from '../utils/dataStore';
 interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation and Interior Construction' | string;
   location: string;
   image: string;
   scope: string;
@@ -32,7 +32,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
 
   const PROJECTS_PER_PAGE = 6;
 
-  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Frameworks', 'Civil Works'] as const;
+  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Frameworks', 'Civil Works', 'Renovation and Interior Construction'] as const;
 
   const projects = dataStore.getProjects(false) as unknown as Project[];
   const hasCustomProjects = projects.some(p => p.id && !p.id.match(/^proj-[1-8]$/));
@@ -144,6 +144,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                   <option value="Commercial Build">Commercial Build</option>
                   <option value="Industrial Frameworks">Industrial Frameworks</option>
                   <option value="Civil Works">Civil Works</option>
+                  <option value="Renovation and Interior Construction">Renovation and Interior Construction</option>
                 </select>
                 {/* Custom Chevron Indicator */}
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-black font-mono text-[10px]">

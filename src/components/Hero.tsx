@@ -220,7 +220,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="text-white bg-black hover:bg-gray-900 border-2 border-black font-display font-bold px-8 py-3.5 rounded-none transition-colors cursor-pointer text-xs uppercase tracking-widest"
+                  className="w-full max-w-sm text-black bg-white hover:bg-gray-50 border border-black font-display font-bold py-3 rounded-none transition-colors cursor-pointer text-xs uppercase tracking-widest text-center"
                 >
                   Submit Another Project
                 </button>

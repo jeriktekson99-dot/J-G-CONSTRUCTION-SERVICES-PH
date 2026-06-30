@@ -17,7 +17,7 @@ export interface Lead {
 export interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation and Interior Construction' | string;
   location: string;
   image: string;
   images?: string[];
