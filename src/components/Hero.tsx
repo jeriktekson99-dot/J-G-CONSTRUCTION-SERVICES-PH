@@ -439,7 +439,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      <span>Ingest Proposal Parameters</span>
+                      <span>Submit Inquiry</span>
                     </>
                   )}
                 </button>

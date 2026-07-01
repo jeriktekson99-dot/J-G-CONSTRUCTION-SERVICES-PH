@@ -238,14 +238,6 @@ export default function Footer({ setView, onScrollToSection }: FooterProps) {
                   Portfolio
                 </button>
               </li>
-              <li>
-                <button 
-                  onClick={() => handleLinkClick('get-started')} 
-                  className="text-gray-600 hover:text-industrial-red cursor-pointer transition-colors text-left"
-                >
-                  Get Started
-                </button>
-              </li>
             </ul>
           </div>
 
@@ -273,7 +265,7 @@ export default function Footer({ setView, onScrollToSection }: FooterProps) {
               </li>
               <li className="flex gap-2 items-center">
                 <Clock className="h-3.5 w-3.5 text-industrial-red shrink-0" />
-                <span>Mon – Fri: 9 AM - 5 PM</span>
+                <span>Mon - Sat: 9 AM - 5 PM</span>
               </li>
             </ul>
           </div>

@@ -242,7 +242,7 @@ export default function About({ onScrollToSection }: AboutProps) {
               </p>
               <div className="pt-2 text-left">
                 <a
-                  href="https://technological-bronze-agq7onbr.edgeone.dev/att.9DAcxf2cG-yOqz6YC4M9igQQSqISDKOkkN_bPcPE068_d6fdc142-1a11-47cc-a6ec-e891dfc21033%20(1).pdf"
+                  href="https://jgconstructionservicesprofile.linkyhost.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center bg-industrial-red hover:bg-industrial-red-hover text-white border-2 border-black font-display font-black py-3 px-6 rounded-none transition-all duration-300 shadow-[4px_4px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0 uppercase text-xs tracking-wider cursor-pointer"
