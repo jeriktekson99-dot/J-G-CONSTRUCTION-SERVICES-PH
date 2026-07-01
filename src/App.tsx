@@ -353,8 +353,9 @@ export default function App() {
                 setView={handleSetView} 
                 onScrollToSection={handleScrollToSection} 
                 onViewLiveProject={(p) => {
+                  setCurrentView('home');
                   setSelectedProject(p);
-                  handleSetView('home');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 syncVersion={syncVersion}
               />
