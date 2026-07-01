@@ -30,6 +30,9 @@ export default function App() {
   const [currentView, setCurrentView] = useState<ViewType>(() => {
     const hash = window.location.hash.replace('#', '');
     const validViews = ['home', 'about', 'services', 'portfolio', 'get-started', 'privacy-policy', 'terms-of-use', 'safety-compliance', 'admin-portal'];
+    if (hash && hash.startsWith('project-')) {
+      return 'home';
+    }
     if (hash && validViews.includes(hash)) {
       return hash as ViewType;
     }
@@ -40,34 +43,77 @@ export default function App() {
     return 'home';
   });
 
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && hash.startsWith('project-')) {
+      const projectId = hash.replace('project-', '');
+      return dataStore.getProjectById(projectId) || null;
+    }
+    return null;
+  });
   const [syncVersion, setSyncVersion] = useState(0);
   const [isInitialSyncLoading, setIsInitialSyncLoading] = useState(true);
 
-  // Sync hash and localStorage on currentView changes
+  // Sync hash and localStorage on state changes
   useEffect(() => {
     localStorage.setItem('jg_current_view', currentView);
-    if (currentView === 'home') {
-      if (window.location.hash) {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    
+    if (selectedProject) {
+      const expectedHash = `#project-${selectedProject.id}`;
+      if (window.location.hash !== expectedHash) {
+        window.history.pushState(null, '', expectedHash);
       }
     } else {
-      window.location.hash = currentView;
+      if (currentView === 'home') {
+        if (window.location.hash !== '' && window.location.hash !== '#') {
+          window.history.pushState(null, '', window.location.pathname + window.location.search);
+        }
+      } else {
+        const expectedHash = `#${currentView}`;
+        if (window.location.hash !== expectedHash) {
+          window.history.pushState(null, '', expectedHash);
+        }
+      }
     }
-  }, [currentView]);
+  }, [currentView, selectedProject]);
 
-  // Listen for hash changes
+  // Listen for popstate and hashchange events
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleNavigation = () => {
       const hash = window.location.hash.replace('#', '');
       const validViews = ['home', 'about', 'services', 'portfolio', 'get-started', 'privacy-policy', 'terms-of-use', 'safety-compliance', 'admin-portal'];
-      if (hash && validViews.includes(hash)) {
+      
+      if (!hash) {
+        setCurrentView('home');
+        setSelectedProject(null);
+      } else if (hash.startsWith('project-')) {
+        const projectId = hash.replace('project-', '');
+        const project = dataStore.getProjectById(projectId);
+        if (project) {
+          setSelectedProject(project);
+        } else {
+          const found = dataStore.getProjects(true, true).find(p => p.id === projectId);
+          if (found) {
+            setSelectedProject(found);
+          }
+        }
+      } else if (validViews.includes(hash)) {
         setCurrentView(hash as ViewType);
+        setSelectedProject(null);
       }
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+
+    window.addEventListener('popstate', handleNavigation);
+    window.addEventListener('hashchange', handleNavigation);
+    
+    // Call to handle deep links or initial hash
+    handleNavigation();
+
+    return () => {
+      window.removeEventListener('popstate', handleNavigation);
+      window.removeEventListener('hashchange', handleNavigation);
+    };
+  }, [syncVersion]);
 
   // Sync data with Supabase database on mount
   useEffect(() => {
