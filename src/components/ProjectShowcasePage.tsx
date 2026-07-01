@@ -436,7 +436,11 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                         setDragActive(false);
                         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                           const filesArray = Array.from(e.dataTransfer.files) as File[];
-                          filesArray.forEach((file: File) => {
+                          const pdfFiles = filesArray.filter(file => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"));
+                          if (pdfFiles.length !== filesArray.length) {
+                            alert("Only PDF files are accepted. Non-PDF files have been filtered out.");
+                          }
+                          pdfFiles.forEach((file: File) => {
                             const reader = new FileReader();
                             reader.onloadend = () => {
                               setSelectedFiles(prev => [...prev, {
@@ -461,10 +465,15 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                         type="file"
                         ref={fileInputRef}
                         multiple
+                        accept=".pdf,application/pdf"
                         onChange={(e) => {
                           if (e.target.files && e.target.files.length > 0) {
                             const filesArray = Array.from(e.target.files) as File[];
-                            filesArray.forEach((file: File) => {
+                            const pdfFiles = filesArray.filter(file => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"));
+                            if (pdfFiles.length !== filesArray.length) {
+                              alert("Only PDF files are accepted. Non-PDF files have been filtered out.");
+                            }
+                            pdfFiles.forEach((file: File) => {
                               const reader = new FileReader();
                               reader.onloadend = () => {
                                 setSelectedFiles(prev => [...prev, {
@@ -514,7 +523,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                             Drag & drop or <span className="text-[#1B49B8] underline">browse files</span>
                           </div>
                           <p className="font-sans text-[9px] text-gray-500">
-                            PDF, CAD, DWG, PNG, or JPG (Max 25MB)
+                            PDF files only (Max 25MB)
                           </p>
                         </div>
                       )}

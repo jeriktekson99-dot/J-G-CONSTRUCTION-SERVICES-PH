@@ -193,12 +193,12 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                     <div>ROUTE_STAMP: JG_{formData.fullName.substring(0,3).toUpperCase()}_0226</div>
                   )}
                   {selectedFiles.length > 0 && (
-                    <div className="text-gray-700 space-y-0.5">
-                      <div className="font-bold">// ATTACHMENTS ({selectedFiles.length}):</div>
+                    <>
+                      <div>ATTACHMENTS ({selectedFiles.length}):</div>
                       {selectedFiles.map((f, idx) => (
-                        <div key={idx} className="truncate pl-3 text-[11px]">- {f.name}</div>
+                        <div key={idx} className="truncate pl-3 text-black font-mono text-xs">- {f.name}</div>
                       ))}
-                    </div>
+                    </>
                   )}
                 </div>
 
@@ -332,7 +332,11 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                       setDragActive(false);
                       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                         const filesArray = Array.from(e.dataTransfer.files) as File[];
-                        filesArray.forEach((file: File) => {
+                        const pdfFiles = filesArray.filter(file => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"));
+                        if (pdfFiles.length !== filesArray.length) {
+                          alert("Only PDF files are accepted. Non-PDF files have been filtered out.");
+                        }
+                        pdfFiles.forEach((file: File) => {
                           const reader = new FileReader();
                           reader.onloadend = () => {
                             setSelectedFiles(prev => [...prev, {
@@ -357,10 +361,15 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                       type="file"
                       ref={fileInputRef}
                       multiple
+                      accept=".pdf,application/pdf"
                       onChange={(e) => {
                         if (e.target.files && e.target.files.length > 0) {
                           const filesArray = Array.from(e.target.files) as File[];
-                          filesArray.forEach((file: File) => {
+                          const pdfFiles = filesArray.filter(file => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"));
+                          if (pdfFiles.length !== filesArray.length) {
+                            alert("Only PDF files are accepted. Non-PDF files have been filtered out.");
+                          }
+                          pdfFiles.forEach((file: File) => {
                             const reader = new FileReader();
                             reader.onloadend = () => {
                               setSelectedFiles(prev => [...prev, {
@@ -410,7 +419,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                           Drag and drop blueprints or <span className="text-[#1B49B8] underline">browse files</span>
                         </div>
                         <p className="font-sans text-[10px] text-gray-500">
-                          Supports PDF, CAD, DWG, PNG, or JPG (Max 25MB)
+                          Supports PDF files only (Max 25MB)
                         </p>
                       </div>
                     )}

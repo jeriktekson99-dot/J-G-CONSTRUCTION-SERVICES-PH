@@ -254,7 +254,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                 <>
                   {filteredProjects.length === 0 ? (
                     <div className="py-12 text-center font-mono text-xs text-gray-500">
-                      NO COMPLETED PROJECTS COMPLY WITH SELECTION FILTERS.
+                      NO ONGOING PROJECTS COMPLY WITH SELECTION FILTERS.
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">

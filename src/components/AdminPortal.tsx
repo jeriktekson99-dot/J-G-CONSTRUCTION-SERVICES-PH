@@ -119,7 +119,7 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
 
   // Search/Filters inside Panels
   const [leadSearch, setLeadSearch] = useState('');
-  const [leadFilter, setLeadFilter] = useState<'All' | 'Pending' | 'Reviewed' | 'Archived'>('All');
+  const [leadFilter, setLeadFilter] = useState<'All' | 'Pending' | 'Reviewed' | 'Archived'>('Pending');
   const [leadShowSoftDeleted, setLeadShowSoftDeleted] = useState(false);
 
   const [projectSearch, setProjectSearch] = useState('');
