@@ -259,11 +259,11 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                 </h2>
                 {project.description && (project.description.includes('<') || project.description.includes('&lt;')) ? (
                   <div 
-                    className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed space-y-3 prose max-w-none prose-headings:font-display prose-headings:font-black break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden"
+                    className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed space-y-3 prose max-w-none prose-headings:font-display prose-headings:font-black break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_p]:mb-3 [&_blockquote]:border-l-3 [&_blockquote]:border-industrial-red [&_blockquote]:pl-4 [&_blockquote]:my-3 [&_blockquote]:py-1 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:bg-gray-50/50 [&_a]:text-[#1B49B8] [&_a]:underline hover:[&_a]:text-[#12338A] [&_h2]:font-display [&_h2]:font-black [&_h2]:text-black [&_h2]:text-lg [&_h2]:uppercase [&_h2]:tracking-tight [&_h2]:mb-2 [&_h2]:mt-4 [&_h3]:font-display [&_h3]:font-extrabold [&_h3]:text-[#111111] [&_h3]:text-base [&_h3]:uppercase [&_h3]:tracking-tight [&_h3]:mb-2 [&_h3]:mt-4"
                     dangerouslySetInnerHTML={{ __html: project.description }}
                   />
                 ) : (
-                  <p className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden">
+                  <p className="font-sans text-gray-700 text-sm sm:text-base leading-relaxed break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden whitespace-pre-wrap">
                     {project.description || "No project specification profiles ingested."}
                   </p>
                 )}

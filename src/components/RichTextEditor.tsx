@@ -82,6 +82,104 @@ export default function RichTextEditor({
     });
   };
 
+  const sanitizeHTML = (html: string): string => {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      const cleanNode = (node: Node): Node | null => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return node.cloneNode(true);
+        }
+        
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          const tagName = element.tagName.toLowerCase();
+          
+          // Allowed formatting elements
+          const allowedTags = [
+            'p', 'br', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'strong', 'b', 'em', 'i', 'u', 'span',
+            'ul', 'ol', 'li', 'blockquote', 'a'
+          ];
+          
+          if (!allowedTags.includes(tagName)) {
+            const ignoredTags = ['script', 'style', 'meta', 'title', 'head', 'link'];
+            if (ignoredTags.includes(tagName)) {
+              return null;
+            }
+            
+            // Flatten unallowed container tags (like tables, divs, section, etc.) to retain text and nested allowed elements
+            const frag = document.createDocumentFragment();
+            element.childNodes.forEach(child => {
+              const cleaned = cleanNode(child);
+              if (cleaned) frag.appendChild(cleaned);
+            });
+            return frag;
+          }
+          
+          // Create new tag with zero attributes except specific allowed ones
+          const cleanEl = document.createElement(tagName);
+          
+          if (tagName === 'a') {
+            const href = element.getAttribute('href');
+            if (href) {
+              cleanEl.setAttribute('href', href);
+              cleanEl.setAttribute('target', '_blank');
+              cleanEl.setAttribute('rel', 'noopener noreferrer');
+              cleanEl.setAttribute('class', 'text-[#1B49B8] hover:underline font-bold');
+            }
+          }
+          
+          element.childNodes.forEach(child => {
+            const cleaned = cleanNode(child);
+            if (cleaned) cleanEl.appendChild(cleaned);
+          });
+          
+          return cleanEl;
+        }
+        
+        return null;
+      };
+      
+      const fragment = document.createDocumentFragment();
+      doc.body.childNodes.forEach(child => {
+        const cleaned = cleanNode(child);
+        if (cleaned) fragment.appendChild(cleaned);
+      });
+      
+      const tempDiv = document.createElement('div');
+      tempDiv.appendChild(fragment);
+      return tempDiv.innerHTML;
+    } catch (e) {
+      console.error('Pasted HTML sanitization failed:', e);
+      return '';
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    
+    const html = e.clipboardData.getData('text/html');
+    const text = e.clipboardData.getData('text/plain');
+    
+    let pasteContent = '';
+    
+    if (html) {
+      pasteContent = sanitizeHTML(html);
+    } else if (text) {
+      pasteContent = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\r?\n/g, '<br>');
+    }
+    
+    if (pasteContent) {
+      document.execCommand('insertHTML', false, pasteContent);
+    }
+  };
+
   const handleInput = () => {
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
@@ -371,6 +469,7 @@ export default function RichTextEditor({
           onKeyUp={updateActiveStyles}
           onMouseUp={updateActiveStyles}
           onFocus={updateActiveStyles}
+          onPaste={handlePaste}
           placeholder={placeholder}
           id="wysiwyg-editor-canvas"
           className="w-full min-h-[250px] p-4 font-sans text-xs text-black border-none focus:outline-none focus:ring-0 leading-relaxed bg-white prose prose-sm max-w-none prose-headings:font-display prose-headings:font-black prose-p:font-sans prose-p:text-sm 

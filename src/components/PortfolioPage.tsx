@@ -445,9 +445,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                     YEAR: {selectedProject.completedYear}
                   </span>
                 </div>
-              </div>
-
-              {/* Photo Display Banner */}
+                          {/* Photo Display Banner */}
               <div className="aspect-[21/9] border border-black overflow-hidden bg-gray-100 mb-6">
                 <img 
                   src={selectedProject.image} 
@@ -464,7 +462,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                     PROJECT PROFILE DESCRIPTION
                   </span>
                   <div 
-                    className="break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden font-sans text-gray-700 text-sm leading-relaxed"
+                    className="break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden font-sans text-gray-700 text-sm leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_p]:mb-3 [&_blockquote]:border-l-3 [&_blockquote]:border-industrial-red [&_blockquote]:pl-4 [&_blockquote]:my-3 [&_blockquote]:py-1 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:bg-gray-50/50 [&_a]:text-[#1B49B8] [&_a]:underline hover:[&_a]:text-[#12338A] [&_h2]:font-display [&_h2]:font-black [&_h2]:text-black [&_h2]:text-lg [&_h2]:uppercase [&_h2]:tracking-tight [&_h2]:mb-2 [&_h2]:mt-4 [&_h3]:font-display [&_h3]:font-extrabold [&_h3]:text-[#111111] [&_h3]:text-base [&_h3]:uppercase [&_h3]:tracking-tight [&_h3]:mb-2 [&_h3]:mt-4"
                     dangerouslySetInnerHTML={{ __html: selectedProject.description || '' }}
                   />
                 </div>
@@ -473,11 +471,12 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                     CORE DELIVERABLE SCOPE OF WORK
                   </span>
                   <div 
-                    className="break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden font-sans text-gray-700 text-sm leading-relaxed"
+                    className="break-words break-all [word-break:break-word] [overflow-wrap:anywhere] overflow-hidden font-sans text-gray-700 text-sm leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_p]:mb-3 [&_blockquote]:border-l-3 [&_blockquote]:border-industrial-red [&_blockquote]:pl-4 [&_blockquote]:my-3 [&_blockquote]:py-1 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:bg-gray-50/50 [&_a]:text-[#1B49B8] [&_a]:underline hover:[&_a]:text-[#12338A] [&_h2]:font-display [&_h2]:font-black [&_h2]:text-black [&_h2]:text-lg [&_h2]:uppercase [&_h2]:tracking-tight [&_h2]:mb-2 [&_h2]:mt-4 [&_h3]:font-display [&_h3]:font-extrabold [&_h3]:text-[#111111] [&_h3]:text-base [&_h3]:uppercase [&_h3]:tracking-tight [&_h3]:mb-2 [&_h3]:mt-4"
                     dangerouslySetInnerHTML={{ __html: selectedProject.scope || '' }}
                   />
                 </div>
               </div>
+            </div>
 
               {/* Developer attribution section */}
               <div className="mt-6 border-t border-gray-100 pt-4 flex flex-col sm:flex-row sm:items-center justify-start gap-4 font-mono text-[11px]">
