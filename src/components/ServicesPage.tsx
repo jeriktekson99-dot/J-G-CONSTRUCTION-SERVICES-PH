@@ -79,15 +79,15 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
     {
       id: "ser-4",
       title: "Civil Works & Site Infrastructure",
-      tagline: "High-Grade Earthworks, Roads & Demarcations",
+      tagline: "Earthworks, Roads & Demarcations",
       description: "Site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for slope and soil stability.",
       image: "/assets/images/civil_infrastructure_1780500263690.png",
       metric: "F_s ≥ 1.5",
       metricLabel: "Soil Shear Safety Factor and Slope Stability Margin",
       scopeItems: [
         "Storm drainage arrays, precast concrete box culverts, and channels.",
-        "Concrete road networks, industrial parking spaces, and site paving.",
-        "Slope erosion protection walls, bio-engineering layers, and soil checks."
+        "Concrete road networks, parking spaces, and site paving.",
+        "Slope erosion protection walls and soil checks."
       ],
       equation: "F_s = ∑τ_f / ∑τ_d",
       equationDesc: "Standard safety factor ratio evaluating soil shearing threshold against applied downforce shear patterns."
@@ -95,15 +95,15 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
     {
       id: "ser-5",
       title: "Structural Engineering & Design",
-      tagline: "Uncompromising Concrete & Structural Steel Computations",
-      description: "Rigid calculation models under building codes, structural code, and seismic stability guarantees to prevent structural vulnerabilities.",
+      tagline: "Concrete, Structural Steel Design & Seismic Design",
+      description: "Rigid calculation models under building codes, structural code, and seismic design to prevent structural vulnerabilities.",
       image: "/assets/images/field_excellence_operations_1780503096054.png",
       metric: "100%",
       metricLabel: "Calculation Success Rate on Initial Building Permit Reviews",
       scopeItems: [
-        "Concrete Design & Steel Structure",
-        "Structural steel roof truss detailing, connection plates, and welding QA.",
-        "Rigid wind-tunnel load computations and roof load distributions."
+        "Concrete Structure Design",
+        "Steel Structure Design",
+        "Composite Structuring Design"
       ],
       equation: "M_u ≤ ɸ M_n",
       equationDesc: "In accordance with standard load resistance factor design criteria. Ultimate bending moment must remain strictly beneath nominal resistance capacity."
@@ -111,14 +111,15 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
     {
       id: "ser-6",
       title: "Foundations & Concrete Works",
-      tagline: "Monolithic Foundations & Subgrade Stability Checking",
-      description: "Ensuring structural permanence with monolithic slab pours, high-PSI concrete column pouring, soil shear suitability check, piling, and footing integrity certifications.",
+      tagline: "Foundations & Subgrade Stability Design",
+      description: "Ensuring foundation integrity with monolithic concrete pouring, and soil shear stability check.",
       image: "/assets/images/rebar_foundation_1780503628161.png",
       metric: "f'_c ≥ Spec",
       metricLabel: "Concrete Strength Verification Curing Compliance Rate",
       scopeItems: [
-        "High-strength monolithic footing pours and foundation mat setups.",
-        "Reinforcing steel rebar schedules and on-site civil checkouts."
+        "Precise Excavation (Plan Based)",
+        "Proper Reinforcement Installation",
+        "Monolithic concrete pouring to avoid cold soils"
       ],
       equation: "f'_c ≥ Specified PSI",
       equationDesc: "Core concrete structural validation checks; field testing standard cylinders at strict 7, 14, and 28-day curing points."
