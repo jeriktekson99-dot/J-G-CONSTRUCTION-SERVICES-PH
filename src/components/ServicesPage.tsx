@@ -96,7 +96,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       id: "ser-5",
       title: "Structural Engineering & Design",
       tagline: "Concrete, Structural Steel Design & Seismic Design",
-      description: "Rigid calculation models under building codes, structural code, and seismic design to prevent structural vulnerabilities.",
+      description: "Using computer aided design software (Bently Staad Pro Advance), and other advance software for structural design to prevent structural vulnerabilities)",
       image: "/assets/images/field_excellence_operations_1780503096054.png",
       metric: "100%",
       metricLabel: "Calculation Success Rate on Initial Building Permit Reviews",
