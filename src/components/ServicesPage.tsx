@@ -103,7 +103,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       scopeItems: [
         "Concrete Structure Design",
         "Steel Structure Design",
-        "Composite Structuring Design"
+        "Composite Structure Design"
       ],
       equation: "M_u ≤ ɸ M_n",
       equationDesc: "In accordance with standard load resistance factor design criteria. Ultimate bending moment must remain strictly beneath nominal resistance capacity."
