@@ -80,12 +80,12 @@ export default function Services({ onScrollToSection }: ServicesProps) {
   return (
     <section 
       id="capabilities" 
-      className="py-16 bg-white border-t border-gray-100"
+      className="py-12 bg-white border-t border-gray-100"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="border-b border-black pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
+        <div className="border-b border-black pb-6 mb-10 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
           <div>
             <h2 className="font-display font-black text-3xl sm:text-4xl text-black tracking-tight">
               Offered Services
@@ -94,14 +94,14 @@ export default function Services({ onScrollToSection }: ServicesProps) {
         </div>
 
         {/* 8-Column Grid Layout (Show 4 columns on large screens, 2 on medium, 1 on small) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
           {services.map((svc, idx) => {
             const IconComponent = svc.icon;
             return (
               <div
                 key={svc.id}
                 onClick={() => onScrollToSection?.(svc.id)}
-                className={`bg-white border border-black p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-[6px_6px_0px_#111111] hover:-translate-y-1 group relative cursor-pointer ${svc.accentColor}`}
+                className={`bg-white border border-black py-5 px-5 flex flex-col justify-between transition-all duration-300 hover:shadow-[6px_6px_0px_#111111] hover:-translate-y-1 group relative cursor-pointer ${svc.accentColor}`}
               >
                 {/* Structural Grid lines background overlay on hover to simulate engineering charts */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.02] pointer-events-none transition-opacity duration-300" style={{
@@ -111,21 +111,21 @@ export default function Services({ onScrollToSection }: ServicesProps) {
 
                 <div>
                   {/* Card top branding indicators */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="p-3 bg-gray-50 border border-gray-200 group-hover:border-black group-hover:bg-white text-black transition-colors">
-                      <IconComponent className="h-6 w-6 text-black group-hover:text-industrial-red transition-colors" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-2 bg-gray-50 border border-gray-200 group-hover:border-black group-hover:bg-white text-black transition-colors">
+                      <IconComponent className="h-5.5 w-5.5 text-black group-hover:text-industrial-red transition-colors" />
                     </div>
                     <span className="font-mono text-xs text-gray-400 group-hover:text-black font-bold transition-colors">
                       [0{idx + 1}]
                     </span>
                   </div>
 
-                  <h3 className="font-display font-extrabold text-[#111111] text-lg tracking-tight mb-2 text-left group-hover:text-industrial-red transition-colors">
+                  <h3 className="font-display font-extrabold text-[#111111] text-lg tracking-tight mb-1 text-left group-hover:text-industrial-red transition-colors">
                     {svc.title}
                   </h3>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-end font-mono text-[10px] text-black font-bold">
+                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-end font-mono text-[10px] text-black font-bold">
                   <div className="flex items-center gap-1 group-hover:text-industrial-red transition-colors text-xs">
                     <span>Details</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
