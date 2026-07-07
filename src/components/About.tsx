@@ -198,7 +198,7 @@ export default function About({ onScrollToSection }: AboutProps) {
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* PAGE HERO HEADER */}
-      <section className="relative py-[81px] border-b border-black overflow-hidden">
+      <section className="relative py-12 border-b border-black overflow-hidden">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -220,7 +220,7 @@ export default function About({ onScrollToSection }: AboutProps) {
           <div className="flex flex-col gap-4 text-left">
             <div>
               <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
-                ABOUT OUR FIRM
+                ABOUT US
               </h1>
             </div>
           </div>
@@ -230,25 +230,20 @@ export default function About({ onScrollToSection }: AboutProps) {
       {/* SECTION 0.5: OUR ORIGINS */}
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
             
             {/* Left Column Text */}
-            <div className="lg:col-span-6 text-left">
-              <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-black tracking-tight leading-tight mb-6">
+            <div className="lg:col-span-6 text-left lg:flex lg:flex-col lg:justify-center py-3">
+              <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-black tracking-tight leading-tight mb-4">
                 Specialized Craftsmanship.<br/>Built on a Foundation of Trust.
               </h2>
-              <p className="font-sans text-gray-600 text-sm leading-relaxed mb-6">
-                <strong>J/G Construction Services</strong> is a premier construction and engineering firm dedicated to high-precision general construction, civil works, meticulous renovations, and interior fit-outs. We specialize in transforming complex structural blueprints into robust, compliant, and exquisitely finished corporate offices, retail spaces, and premium residential properties. Grounded in integrity and engineered for excellence, we ensure every project is built to the highest standards.
-              </p>
-              <div className="pt-2 text-left">
-                <a
-                  href="https://jgconstructionservicesprofile.linkyhost.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center bg-industrial-red hover:bg-industrial-red-hover text-white border-2 border-black font-display font-black py-3 px-6 rounded-none transition-all duration-300 shadow-[4px_4px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0 uppercase text-xs tracking-wider cursor-pointer"
-                >
-                  Company Profile
-                </a>
+              <div className="font-sans text-base text-gray-600 leading-relaxed space-y-4">
+                <p>
+                  <strong>J/G Construction Services</strong> is a premier construction and engineering firm dedicated to high-precision general construction, civil works, meticulous renovations, and interior fit-outs.
+                </p>
+                <p>
+                  We specialize in transforming complex structural blueprints into robust, compliant, and exquisitely finished corporate offices, retail spaces, and premium residential properties. Grounded in integrity and engineered for excellence, we ensure every project is built to the highest standards.
+                </p>
               </div>
             </div>
 
@@ -315,12 +310,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                     </h3>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-end font-mono text-[10px] text-black font-bold">
-                    <div className="flex items-center gap-1 group-hover:text-industrial-red transition-colors text-xs">
-                      <span>Details</span>
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </div>
+
                 </div>
               );
             })}

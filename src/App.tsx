@@ -346,13 +346,6 @@ export default function App() {
                 {/* Offered Services Section */}
                 <Services onScrollToSection={handleScrollToSection} />
                 
-                {/* Project Showcases Section */}
-                <Showcase 
-                  onScrollToSection={handleScrollToSection} 
-                  onSelectProject={setSelectedProject}
-                  isInitialSyncLoading={isInitialSyncLoading}
-                />
-                
                 {/* Why Choose Us Pillars Section */}
                 <WhyChooseUs />
                 

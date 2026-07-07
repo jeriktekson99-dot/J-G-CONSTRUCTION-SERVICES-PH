@@ -7,7 +7,7 @@ import { dataStore } from '../utils/dataStore';
 interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation' | 'Interior Construction' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Projects' | 'Civil Works / Steel Works' | 'Renovation' | 'Interior Construction' | string;
   location: string;
   image: string;
   scope: string;
@@ -32,7 +32,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
 
   const PROJECTS_PER_PAGE = 6;
 
-  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Frameworks', 'Civil Works', 'Renovation', 'Interior Construction'] as const;
+  const categories = ['All', 'Structural Design', 'Commercial Build', 'Industrial Projects', 'Civil Works / Steel Works', 'Renovation', 'Interior Construction'] as const;
 
   const projects = dataStore.getProjects(false) as unknown as Project[];
   const hasCustomProjects = projects.some(p => p.id && !p.id.match(/^proj-[1-8]$/));
@@ -75,7 +75,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* PORTFOLIO HERO HEADER */}
-      <section className="relative py-[81px] border-b border-black overflow-hidden">
+      <section className="relative py-12 border-b border-black overflow-hidden">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -97,7 +97,7 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
           <div className="flex flex-col gap-4 text-left">
             <div>
               <h1 className="font-display font-extrabold text-[#111111] text-3xl sm:text-4xl lg:text-5xl tracking-tight uppercase leading-none">
-                Our Completed Works
+                Our Projects
               </h1>
             </div>
           </div>
@@ -142,8 +142,8 @@ export default function PortfolioPage({ onScrollToSection, isInitialSyncLoading 
                   <option value="All">All Categories</option>
                   <option value="Structural Design">Structural Design</option>
                   <option value="Commercial Build">Commercial Build</option>
-                  <option value="Industrial Frameworks">Industrial Frameworks</option>
-                  <option value="Civil Works">Civil Works</option>
+                  <option value="Industrial Projects">Industrial Projects</option>
+                  <option value="Civil Works / Steel Works">Civil Works / Steel Works</option>
                   <option value="Renovation">Renovation</option>
                   <option value="Interior Construction">Interior Construction</option>
                 </select>

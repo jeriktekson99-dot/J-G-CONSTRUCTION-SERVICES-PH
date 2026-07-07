@@ -19,7 +19,7 @@ import { dataStore } from '../utils/dataStore';
 interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation' | 'Interior Construction' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Projects' | 'Civil Works / Steel Works' | 'Renovation' | 'Interior Construction' | string;
   location: string;
   image: string;
   images?: string[];
@@ -53,7 +53,7 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
   // Fallback data mapping to match requested specifications
   const clientName = project.client || "Industrial Logistics Corp.";
   const locationText = project.location ? project.location : "Cavite";
-  const projectSector = project.category || "Industrial Frameworks & Infrastructure";
+  const projectSector = project.category || "Industrial Projects & Infrastructure";
   const totalFootage = project.id === 'proj-1' ? "12,500 Sq.M." : "8,200 Sq.M.";
   const valSavings = "14% Material Optimization";
 
@@ -310,11 +310,10 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                   J/G CONSTRUCTION TEAM
                 </h4>
                 <p className="font-sans text-xs text-gray-500 mt-1">
-                  Safe Operations Protocol Verified
                 </p>
               </div>
               <div className="pt-3 border-t border-gray-100 font-mono text-xs">
-                <span className="text-gray-400 block mb-1">PROJECT TECHNICAL OFFICE:</span>
+                <span className="text-gray-400 block mb-1">COMPANY EMAIL ADDRESS:</span>
                 <a 
                   href="mailto:jgconstruction880@gmail.com" 
                   className="text-[#1B49B8] hover:text-industrial-red break-all transition-colors font-bold"

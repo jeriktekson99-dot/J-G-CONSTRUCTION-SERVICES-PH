@@ -88,7 +88,7 @@ export default function Services({ onScrollToSection }: ServicesProps) {
         <div className="border-b border-black pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
           <div>
             <h2 className="font-display font-black text-3xl sm:text-4xl text-black tracking-tight">
-              Engineered for Excellence
+              Offered Services
             </h2>
           </div>
         </div>

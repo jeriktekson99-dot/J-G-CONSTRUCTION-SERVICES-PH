@@ -2688,8 +2688,8 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                         <option value="All">All Sectors</option>
                         <option value="Structural Design">Structural Design</option>
                         <option value="Commercial Build">Commercial Build</option>
-                        <option value="Industrial Frameworks">Industrial Frameworks</option>
-                        <option value="Civil Works">Civil Works</option>
+                        <option value="Industrial Projects">Industrial Projects</option>
+                        <option value="Civil Works / Steel Works">Civil Works / Steel Works</option>
                         <option value="Renovation">Renovation</option>
                         <option value="Interior Construction">Interior Construction</option>
                       </select>
@@ -3854,8 +3854,8 @@ export default function AdminPortal({ onScrollToSection, setView, onViewLiveProj
                     >
                       <option value="Structural Design">Structural Design</option>
                       <option value="Commercial Build">Commercial Build</option>
-                      <option value="Industrial Frameworks">Industrial Frameworks</option>
-                      <option value="Civil Works">Civil Works</option>
+                      <option value="Industrial Projects">Industrial Projects</option>
+                      <option value="Civil Works / Steel Works">Civil Works / Steel Works</option>
                       <option value="Renovation">Renovation</option>
                       <option value="Interior Construction">Interior Construction</option>
                     </select>

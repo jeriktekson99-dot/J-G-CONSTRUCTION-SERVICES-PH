@@ -38,12 +38,11 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       id: "ser-1",
       title: "Architectural Planning & Drafting",
       tagline: "Excellent Workmanship & Aesthetic Space Utilization",
-      description: "Detailed space planning, custom office/residence structural layouts, custom architectural renderings, and drafting tailored to total client satisfaction. We ensure spatial efficiency meets complete functional expectations.",
+      description: "Detailed space planning, custom office/residence structural layouts, custom architectural renderings, and drafting tailored to total client satisfaction.",
       image: "/assets/images/about_construction_site_1780503065020.png",
       metric: "100%",
       metricLabel: "Client Satisfaction Approval on Drafting Concepts",
       scopeItems: [
-        "Bespoke schematic spatial design and interior layout drafting.",
         "3D model architectural renderings and visualization structures.",
         "Space utilization surveys to maximize square footage and layout efficiency.",
         "Detailed CAD elevation drawings and regulatory zoning documentation."
@@ -53,14 +52,14 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       id: "ser-2",
       title: "Interior Fit-Out & Finishing Works",
       tagline: "Premium Quality Finishings for Commercial & Corporate Spaces",
-      description: "High-grade finishing, custom partition walls, false ceilings, architectural trims, surface detailing, and cabinetry designed with exacting structural standards to ensure beautiful and durable interiors.",
+      description: "Custom Finishing, custom partition walls, false ceilings, architectural trims, surface detailing, and cabinetry designed as per standard to ensure beautiful and durable interiors.",
       image: "/assets/images/commercial_fitout_1780503646291.png",
       metric: "45 Days",
       metricLabel: "Average Completion Timeline for Corporate Store Outlets",
       scopeItems: [
         "Drywall framing, acoustical partition structures, and decorative columns.",
         "Acoustical false ceilings, raised floor tiling, and tailored carpentry.",
-        "Premium painting, custom wood veneer application, and surface treatments.",
+        "Customized Painting, custom wood veneer application, and surface treatments.",
         "Final fit-out inspections, equipment mounting, and detailing schedules."
       ]
     },
@@ -74,8 +73,6 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       metricLabel: "Unapproved Budget Spillover in Scope Upgrades",
       scopeItems: [
         "Complete electrical/plumbing strip-outs and safe load-bearing transfers.",
-        "Structural floor mezzanine installations and safety staircases.",
-        "Modern facade cladding, exterior sealant works, and waterproofing coatings.",
         "Structural rehabilitation of aging columns and historical elements."
       ]
     },
@@ -83,12 +80,11 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       id: "ser-4",
       title: "Civil Works & Site Infrastructure",
       tagline: "High-Grade Earthworks, Roads & Demarcations",
-      description: "Heavy site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for regional slope and soil stability.",
+      description: "Site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for slope and soil stability.",
       image: "/assets/images/civil_infrastructure_1780500263690.png",
       metric: "F_s ≥ 1.5",
       metricLabel: "Soil Shear Safety Factor and Slope Stability Margin",
       scopeItems: [
-        "Site volumetric balancing analysis and heavy earthworks grading.",
         "Storm drainage arrays, precast concrete box culverts, and channels.",
         "Concrete road networks, industrial parking spaces, and site paving.",
         "Slope erosion protection walls, bio-engineering layers, and soil checks."
@@ -100,13 +96,12 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       id: "ser-5",
       title: "Structural Engineering & Design",
       tagline: "Uncompromising Concrete & Structural Steel Computations",
-      description: "Rigid calculation models under building codes, structural steel truss detailing, finite element shear load analysis, and seismic stability guarantees to prevent structural vulnerabilities.",
+      description: "Rigid calculation models under building codes, structural code, and seismic stability guarantees to prevent structural vulnerabilities.",
       image: "/assets/images/field_excellence_operations_1780503096054.png",
       metric: "100%",
       metricLabel: "Calculation Success Rate on Initial Building Permit Reviews",
       scopeItems: [
-        "Finite element calculations (FEA) and dynamic seismic shear-wall designs.",
-        "Concrete framing computations, tie-bar details, and beam loads.",
+        "Concrete Design & Steel Structure",
         "Structural steel roof truss detailing, connection plates, and welding QA.",
         "Rigid wind-tunnel load computations and roof load distributions."
       ],
@@ -123,9 +118,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       metricLabel: "Concrete Strength Verification Curing Compliance Rate",
       scopeItems: [
         "High-strength monolithic footing pours and foundation mat setups.",
-        "Deep micropiling checks, concrete grade beams, and retaining walls.",
-        "Reinforcing steel rebar schedules and continuous on-site civil checkouts.",
-        "Standard concrete cylinder specimen casting and 28-day compression checks."
+        "Reinforcing steel rebar schedules and on-site civil checkouts."
       ],
       equation: "f'_c ≥ Specified PSI",
       equationDesc: "Core concrete structural validation checks; field testing standard cylinders at strict 7, 14, and 28-day curing points."
@@ -169,7 +162,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       metric: "-15%",
       metricLabel: "Average Client Baseline Budget Outlay Restructuring",
       scopeItems: [
-        "Thorough material takeoffs and exact quantities structural calculations.",
+        "Thorough material takeoffs and exact quantities.",
         "Cost estimation schedules matching specified milestones on tight budgets.",
         "Value engineering alternatives to satisfy architects and structural engineers.",
         "Feasibility checks, soil suitable profiles, and municipal permits review."
@@ -183,7 +176,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
     <div className="bg-white pt-24 pb-0 text-[#111111]">
       
       {/* SERVICES HERO HEADER */}
-      <section className="relative py-[81px] border-b border-black overflow-hidden bg-gray-50">
+      <section className="relative py-10 border-b border-black overflow-hidden bg-gray-50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -213,33 +206,33 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       </section>
 
       {/* CORE SPECIFICATIONS & SERVICES LIST */}
-      <section className="py-16 bg-white" id="services-view">
+      <section className="py-12 bg-white" id="services-view">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="space-y-12">
+          <div className="space-y-10">
             {servicesList.map((service, idx) => (
               <div 
                 key={service.id}
                 id={service.id}
-                className="border-2 border-black bg-white p-6 sm:p-10 shadow-[6px_6px_0px_#111111] hover:shadow-[10px_10px_0px_#1B49B8] transition-all duration-300 text-left relative flex flex-col space-y-8 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8 rounded-none scroll-mt-24"
+                className="border-2 border-black bg-white p-5 sm:py-8 sm:px-9 shadow-[6px_6px_0px_#111111] hover:shadow-[10px_10px_0px_#1B49B8] transition-all duration-300 text-left relative flex flex-col space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8 rounded-none scroll-mt-24"
               >
                 {/* Left Side: General Info & Performance Metric */}
                 <div className="lg:col-span-6 flex flex-col justify-between">
                   <div>
                     {/* Index designation */}
-                    <div className="font-mono text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-2.5">
+                    <div className="font-mono text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-2">
                       <span>CAPABILITY // 0{idx + 1}</span>
                     </div>
 
-                    <h3 className="font-display font-black text-px sm:text-2xl lg:text-3xl text-black uppercase tracking-tight mb-2">
+                    <h3 className="font-display font-black text-xl sm:text-2xl text-black uppercase tracking-tight mb-2">
                       {service.title}
                     </h3>
 
-                    <p className="font-mono text-xs font-bold text-industrial-red uppercase tracking-wider mb-4 leading-normal">
+                    <p className="font-mono text-xs font-bold text-industrial-red uppercase tracking-wider mb-3 leading-normal">
                       {service.tagline}
                     </p>
 
-                    <p className="font-sans text-sm sm:text-base text-gray-600 leading-relaxed">
+                    <p className="font-sans text-sm text-gray-600 leading-relaxed">
                       {service.description}
                     </p>
                   </div>
@@ -248,9 +241,9 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
                 </div>
 
                 {/* Right Side: Execution Scope Checkpoints */}
-                <div className="lg:col-span-6 border-t-2 border-dashed border-gray-200 pt-8 lg:border-t-0 lg:pt-0 lg:border-l-2 lg:border-dashed lg:pl-8 flex flex-col justify-between">
+                <div className="lg:col-span-6 border-t-2 border-dashed border-gray-200 pt-6 lg:border-t-0 lg:pt-0 lg:border-l-2 lg:border-dashed lg:pl-8 flex flex-col justify-between">
                   <div className="space-y-4">
-                    <ul className="space-y-3.5">
+                    <ul className="space-y-3">
                       {service.scopeItems.map((item, key) => (
                         <li key={key} className="flex items-start gap-3 text-xs sm:text-sm text-gray-700 leading-relaxed">
                           <span className="flex-shrink-0 w-5 h-5 rounded-none border border-black bg-emerald-50 text-emerald-600 flex items-center justify-center font-mono text-[11px] font-black mt-0.5">
@@ -271,7 +264,7 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
       </section>
 
       {/* BOTTOM CALL TO ACTION (CTA) */}
-      <section className="bg-white py-16 border-t border-black relative overflow-hidden">
+      <section className="bg-white py-12 border-t border-black relative overflow-hidden">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
@@ -294,16 +287,16 @@ export default function ServicesPage({ onScrollToSection }: ServicesPageProps) {
             </div>
 
             {/* Actions (Buttons placed below the statement of information) */}
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start">
+            <div className="mt-6 flex flex-col sm:flex-row gap-4 items-start">
               <button
                 onClick={() => onScrollToSection('consultation')}
-                className="inline-flex items-center justify-center bg-industrial-red hover:bg-[#B31717] text-white font-display font-extrabold text-xs uppercase tracking-widest py-4.5 px-10 rounded-none transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 border-2 border-black shadow-[6px_6px_0px_#111111] active:shadow-[0px_0px_0px_#111111] cursor-pointer w-full sm:w-auto"
+                className="inline-flex items-center justify-center bg-industrial-red hover:bg-[#B31717] text-white font-display font-extrabold text-xs uppercase tracking-widest py-3.5 px-8 rounded-none transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 border-2 border-black shadow-[6px_6px_0px_#111111] active:shadow-[0px_0px_0px_#111111] cursor-pointer w-full sm:w-auto"
               >
                 Get Started Now
               </button>
               <button
                 onClick={() => onScrollToSection('services-view')}
-                className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-black font-display font-extrabold text-xs uppercase tracking-widest py-4.5 px-10 rounded-none transition-all duration-300 border-2 border-black shadow-[6px_6px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer w-full sm:w-auto"
+                className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-black font-display font-extrabold text-xs uppercase tracking-widest py-3.5 px-8 rounded-none transition-all duration-300 border-2 border-black shadow-[6px_6px_0px_#111111] active:shadow-[0px_0px_0px_#111111] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer w-full sm:w-auto"
               >
                 Back To Top
               </button>

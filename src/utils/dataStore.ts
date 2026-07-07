@@ -17,7 +17,7 @@ export interface Lead {
 export interface Project {
   id: string;
   title: string;
-  category: 'Structural Design' | 'Commercial Build' | 'Industrial Frameworks' | 'Civil Works' | 'Renovation' | 'Interior Construction' | string;
+  category: 'Structural Design' | 'Commercial Build' | 'Industrial Projects' | 'Civil Works / Steel Works' | 'Renovation' | 'Interior Construction' | string;
   location: string;
   image: string;
   images?: string[];
@@ -57,12 +57,11 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     id: "ser-1",
     title: "Architectural Planning & Drafting",
     tagline: "Excellent Workmanship & Aesthetic Space Utilization",
-    description: "Detailed space planning, custom office/residence structural layouts, custom architectural renderings, and drafting tailored to total client satisfaction. We ensure spatial efficiency meets complete functional expectations.",
+    description: "Detailed space planning, custom office/residence structural layouts, custom architectural renderings, and drafting tailored to total client satisfaction.",
     image: "/assets/images/about_construction_site_1780503065020.png",
     metric: "100%",
     metricLabel: "Client Satisfaction Approval on Drafting Concepts",
     scopeItems: [
-      "Bespoke schematic spatial design and interior layout drafting.",
       "3D model architectural renderings and visualization structures.",
       "Space utilization surveys to maximize square footage and layout efficiency.",
       "Detailed CAD elevation drawings and regulatory zoning documentation."
@@ -72,14 +71,14 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     id: "ser-2",
     title: "Interior Fit-Out & Finishing Works",
     tagline: "Premium Quality Finishings for Commercial & Corporate Spaces",
-    description: "High-grade finishing, custom partition walls, false ceilings, architectural trims, surface detailing, and cabinetry designed with exacting structural standards to ensure beautiful and durable interiors.",
+    description: "Custom Finishing, custom partition walls, false ceilings, architectural trims, surface detailing, and cabinetry designed as per standard to ensure beautiful and durable interiors.",
     image: "/assets/images/commercial_fitout_1780503646291.png",
     metric: "45 Days",
     metricLabel: "Average Completion Timeline for Corporate Store Outlets",
     scopeItems: [
       "Drywall framing, acoustical partition structures, and decorative columns.",
       "Acoustical false ceilings, raised floor tiling, and tailored carpentry.",
-      "Premium painting, custom wood veneer application, and surface treatments.",
+      "Customized Painting, custom wood veneer application, and surface treatments.",
       "Final fit-out inspections, equipment mounting, and detailing schedules."
     ]
   },
@@ -93,8 +92,6 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     metricLabel: "Unapproved Budget Spillover in Scope Upgrades",
     scopeItems: [
       "Complete electrical/plumbing strip-outs and safe load-bearing transfers.",
-      "Structural floor mezzanine installations and safety staircases.",
-      "Modern facade cladding, exterior sealant works, and waterproofing coatings.",
       "Structural rehabilitation of aging columns and historical elements."
     ]
   },
@@ -102,12 +99,11 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     id: "ser-4",
     title: "Civil Works & Site Infrastructure",
     tagline: "High-Grade Earthworks, Roads & Demarcations",
-    description: "Heavy site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for regional slope and soil stability.",
+    description: "Site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for slope and soil stability.",
     image: "/assets/images/civil_infrastructure_1780500263690.png",
     metric: "Factor Safety >= 1.5",
     metricLabel: "Soil Shear Safety Factor and Slope Stability Margin",
     scopeItems: [
-      "Site volumetric balancing analysis and heavy earthworks grading.",
       "Storm drainage arrays, precast concrete box culverts, and channels.",
       "Concrete road networks, industrial parking spaces, and site paving.",
       "Slope erosion protection walls, bio-engineering layers, and soil checks."
@@ -117,13 +113,12 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     id: "ser-5",
     title: "Structural Engineering & Design",
     tagline: "Uncompromising Concrete & Structural Steel Computations",
-    description: "Rigid calculation models under building codes, structural steel truss detailing, finite element shear load analysis, and seismic stability guarantees to prevent structural vulnerabilities.",
+    description: "Rigid calculation models under building codes, structural code, and seismic stability guarantees to prevent structural vulnerabilities.",
     image: "/assets/images/field_excellence_operations_1780503096054.png",
     metric: "100%",
     metricLabel: "Calculation Success Rate on Initial Building Permit Reviews",
     scopeItems: [
-      "Finite element calculations (FEA) and dynamic seismic shear-wall designs.",
-      "Concrete framing computations, tie-bar details, and beam loads.",
+      "Concrete Design & Steel Structure",
       "Structural steel roof truss detailing, connection plates, and welding QA.",
       "Rigid wind-tunnel load computations and roof load distributions."
     ]
@@ -138,9 +133,7 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
     metricLabel: "Concrete Strength Verification Curing Compliance Rate",
     scopeItems: [
       "High-strength monolithic footing pours and foundation mat setups.",
-      "Deep micropiling checks, concrete grade beams, and retaining walls.",
-      "Reinforcing steel rebar schedules and continuous on-site civil checkouts.",
-      "Standard concrete cylinder specimen casting and 28-day compression checks."
+      "Reinforcing steel rebar schedules and on-site civil checkouts."
     ]
   },
   {
@@ -297,7 +290,8 @@ export function serializeLeadAttachments(lead: Lead, keepDataUrl = false): Lead 
   const serializedScope = `${cleanScope}\n---ATTACHMENTS_JSON_START---\n${attachmentsJson}\n---ATTACHMENTS_JSON_END---`;
   return {
     ...lead,
-    projectScope: serializedScope
+    projectScope: serializedScope,
+    attachments: cleanAttachments
   };
 }
 

@@ -74,7 +74,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
   return (
     <section 
       id="hero-section"
-      className="relative min-h-[90vh] pt-36 sm:pt-44 pb-20 flex items-center bg-white overflow-hidden"
+      className="relative min-h-[75vh] pt-28 sm:pt-32 pb-14 flex items-center bg-white overflow-hidden"
     >
       {/* Background Image Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -109,7 +109,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
               </h2>
               
               <p className="font-sans text-gray-600 text-sm sm:text-base leading-relaxed mb-8">
-                Submit your blueprints, draft specifications, or structural concerns via our secure, high-integrity pipeline. Our licensed structural civil engineers evaluate metrics and correspond with detailed estimations within 2 business hours.
+                Submit your inquiry, for initial site evaluation, plan review.
               </p>
             </div>
 
