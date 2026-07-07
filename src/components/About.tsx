@@ -286,7 +286,7 @@ export default function About({ onScrollToSection }: AboutProps) {
                 <div 
                   key={sc.id}
                   onClick={() => onScrollToSection?.(sc.id)}
-                  className={`bg-white border border-black p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-[6px_6px_0px_#111111] hover:-translate-y-1 group relative cursor-pointer ${sc.accent}`}
+                  className={`bg-white border border-black py-5 px-5 flex flex-col justify-between transition-all duration-300 hover:shadow-[6px_6px_0px_#111111] hover:-translate-y-1 group relative cursor-pointer ${sc.accent}`}
                 >
                   {/* Structural Grid lines background overlay on hover to simulate engineering charts */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.02] pointer-events-none transition-opacity duration-300" style={{
@@ -296,9 +296,9 @@ export default function About({ onScrollToSection }: AboutProps) {
                   }} />
 
                   <div>
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="p-3 bg-gray-50 border border-gray-200 text-black">
-                        <IconComp className="h-6 w-6" />
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="p-2 bg-gray-50 border border-gray-200 text-black">
+                        <IconComp className="h-5.5 w-5.5" />
                       </div>
                       <span className="font-mono text-[10px] text-gray-400 font-bold">
                         [0{idx + 1}]
