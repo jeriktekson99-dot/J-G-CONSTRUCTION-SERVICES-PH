@@ -719,7 +719,7 @@ export const supabaseSync = {
 
 
   async pushLead(lead: Lead): Promise<void> {
-    const serializedLead = serializeLeadAttachments(lead);
+    const serializedLead = serializeLeadAttachments(lead, true); // Keep attachments dataUrl for Supabase Sync!
     registerLocalMutation('leads', lead.id, 'upsert', serializedLead);
     broadcastSyncMutation('leads');
     if (syncStatus.missingTables.includes('leads')) return;

@@ -266,21 +266,35 @@ const safeSetItem = (key: string, value: string): void => {
 };
 
 // Standalone top-level exported helper functions for lead attachments inside the projectScope TEXT field
-export function serializeLeadAttachments(lead: Lead): Lead {
+export function serializeLeadAttachments(lead: Lead, keepDataUrl = false): Lead {
   if (!lead.attachments || lead.attachments.length === 0) {
     return lead;
   }
-  if (lead.projectScope.includes("---ATTACHMENTS_JSON_START---")) {
-    return lead;
+  
+  // Extract clean scope first to avoid duplicate blocks
+  let cleanScope = lead.projectScope || '';
+  const startTag = "---ATTACHMENTS_JSON_START---";
+  const endTag = "---ATTACHMENTS_JSON_END---";
+  const startIndex = cleanScope.indexOf(startTag);
+  if (startIndex !== -1) {
+    cleanScope = cleanScope.substring(0, startIndex).trim();
   }
-  // Strip dataUrl from attachments before serializing to localStorage / Supabase
-  const cleanAttachments = lead.attachments.map(att => ({
-    name: att.name,
-    size: att.size,
-    type: att.type
-  }));
+
+  // Strip or keep dataUrl from attachments before serializing to localStorage / Supabase
+  const cleanAttachments = lead.attachments.map(att => {
+    const item: any = {
+      name: att.name,
+      size: att.size,
+      type: att.type
+    };
+    if (keepDataUrl && att.dataUrl) {
+      item.dataUrl = att.dataUrl;
+    }
+    return item;
+  });
+  
   const attachmentsJson = JSON.stringify(cleanAttachments);
-  const serializedScope = `${lead.projectScope}\n---ATTACHMENTS_JSON_START---\n${attachmentsJson}\n---ATTACHMENTS_JSON_END---`;
+  const serializedScope = `${cleanScope}\n---ATTACHMENTS_JSON_START---\n${attachmentsJson}\n---ATTACHMENTS_JSON_END---`;
   return {
     ...lead,
     projectScope: serializedScope
@@ -302,10 +316,26 @@ export function deserializeLeadAttachments(lead: any): Lead {
       const jsonStr = scope.substring(startIndex + startTag.length, endIndex).trim();
       const attachments = JSON.parse(jsonStr);
       const cleanScope = scope.substring(0, startIndex).trim();
+      
+      const processedAttachments = Array.isArray(attachments) ? attachments.map((file: any) => {
+        if (file.dataUrl) {
+          const cacheKey = `${lead.id}_${file.name}`;
+          // Set in memory cache
+          attachmentCache.set(cacheKey, file.dataUrl);
+          // Save in IndexedDB background task
+          saveAttachment(cacheKey, file.dataUrl).catch(err => 
+            console.error("IndexedDB save failed on deserialize:", err)
+          );
+          // Strip dataUrl for LocalStorage storage
+          return { ...file, dataUrl: undefined };
+        }
+        return file;
+      }) : [];
+
       return {
         ...lead,
         projectScope: cleanScope,
-        attachments: Array.isArray(attachments) ? attachments : []
+        attachments: processedAttachments
       };
     } catch (e) {
       console.warn("Failed to parse serialized attachments:", e);
@@ -523,33 +553,31 @@ export const dataStore = {
     const leads = this.getLeads(true);
     const newId = 'lead-' + Date.now();
     
-    // Move attachments' dataUrl into IndexedDB and cache, and strip them from the local storage object!
-    let processedAttachments = lead.attachments;
-    if (processedAttachments && processedAttachments.length > 0) {
-      processedAttachments = processedAttachments.map((file) => {
+    // Save attachments' dataUrl into IndexedDB and cache
+    if (lead.attachments && lead.attachments.length > 0) {
+      lead.attachments.forEach((file) => {
         if (file.dataUrl) {
           const cacheKey = `${newId}_${file.name}`;
           attachmentCache.set(cacheKey, file.dataUrl);
           saveAttachment(cacheKey, file.dataUrl).catch(err => console.error("IndexedDB save failed:", err));
-          // Strip dataUrl from what goes into localStorage
-          return { ...file, dataUrl: undefined };
         }
-        return file;
       });
     }
 
     const newLead: Lead = {
       ...lead,
       id: newId,
-      attachments: processedAttachments,
       timestamp: new Date().toISOString(),
       status: 'Pending'
     };
     leads.unshift(newLead);
     if (isClient) {
-      const serializedLeads = leads.map(serializeLeadAttachments);
+      // 1. Serialize and save to localStorage WITHOUT dataUrl to save quota
+      const serializedLeads = leads.map(l => serializeLeadAttachments(l, false));
       safeSetItem('jg_leads', JSON.stringify(serializedLeads));
-      supabaseSync.pushLead(serializeLeadAttachments(newLead));
+      
+      // 2. Push to Supabase WITH dataUrl (newLead.attachments has hydrated dataUrls)
+      supabaseSync.pushLead(newLead);
     }
     return newLead;
   },
@@ -560,9 +588,11 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].status = status;
-      const serializedLeads = leads.map(serializeLeadAttachments);
+      // 1. Save to localStorage without dataUrl
+      const serializedLeads = leads.map(l => serializeLeadAttachments(l, false));
       safeSetItem('jg_leads', JSON.stringify(serializedLeads));
-      supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
+      // 2. Push to Supabase with dataUrl (leads[index] is already hydrated by getLeads)
+      supabaseSync.pushLead(leads[index]);
     }
   },
 
@@ -572,9 +602,11 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].isDeleted = true;
-      const serializedLeads = leads.map(serializeLeadAttachments);
+      // 1. Save to localStorage without dataUrl
+      const serializedLeads = leads.map(l => serializeLeadAttachments(l, false));
       safeSetItem('jg_leads', JSON.stringify(serializedLeads));
-      await supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
+      // 2. Push to Supabase with dataUrl
+      await supabaseSync.pushLead(leads[index]);
     }
   },
 
@@ -584,16 +616,18 @@ export const dataStore = {
     const index = leads.findIndex(l => l.id === id);
     if (index >= 0) {
       leads[index].isDeleted = false;
-      const serializedLeads = leads.map(serializeLeadAttachments);
+      // 1. Save to localStorage without dataUrl
+      const serializedLeads = leads.map(l => serializeLeadAttachments(l, false));
       safeSetItem('jg_leads', JSON.stringify(serializedLeads));
-      await supabaseSync.pushLead(serializeLeadAttachments(leads[index]));
+      // 2. Push to Supabase with dataUrl
+      await supabaseSync.pushLead(leads[index]);
     }
   },
 
   async hardDeleteLead(id: string): Promise<void> {
     if (!isClient) return;
     const leads = this.getLeads(true).filter(l => l.id !== id);
-    const serializedLeads = leads.map(serializeLeadAttachments);
+    const serializedLeads = leads.map(l => serializeLeadAttachments(l, false));
     safeSetItem('jg_leads', JSON.stringify(serializedLeads));
     await supabaseSync.deleteLead(id);
 
