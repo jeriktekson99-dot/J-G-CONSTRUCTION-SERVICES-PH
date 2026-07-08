@@ -208,11 +208,6 @@ export default function ProjectShowcasePage({ project, onBack, onScrollToSection
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-all duration-300 transform"
                 />
-                
-                {/* Embedded Phase Mini tag overlay */}
-                <span className="absolute top-4 left-4 bg-black text-white text-[9px] font-mono font-black px-2 py-0.5 tracking-wider uppercase">
-                  {thumbnailOptions[activeThumbIndex % thumbnailOptions.length]?.icon || `Phase ${activeThumbIndex + 1}`}
-                </span>
               </div>
 
               {/* Row of Interactive Thumbnail Grid - Sharp landscape frame aspect */}

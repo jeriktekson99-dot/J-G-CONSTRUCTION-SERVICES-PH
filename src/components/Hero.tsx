@@ -122,7 +122,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 </div>
                 <div>
                   <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
-                    DIRECT DIGITAL DISPATCH
+                    Company Email Address
                   </span>
                   <a 
                     href="mailto:jgconstruction880@gmail.com" 
@@ -139,7 +139,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 </div>
                 <div>
                   <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
-                    REGIONAL SITE OFFICE HOTLINE
+                    Company Phone Number
                   </span>
                   <a 
                     href="tel:+639453087399" 
@@ -156,7 +156,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                 </div>
                 <div>
                   <span className="block font-mono text-[9px] text-gray-400 uppercase tracking-widest font-black leading-none mb-1">
-                    HQ DESIGN & CONTRACTING SUITE
+                    Office Address
                   </span>
                   <p className="font-sans text-xs sm:text-sm text-gray-700 font-medium">
                     Lot 8, Block 6, Legian 2D Subdivision, Carsadang Bago I, Imus City, Cavite, Philippines
@@ -313,7 +313,7 @@ export default function Hero({ onGetStarted, onViewProjects }: HeroProps) {
                     value={formData.projectScope}
                     onChange={(e) => setFormData({ ...formData, projectScope: e.target.value })}
                     className="flex-1 min-h-[100px] w-full bg-white border border-black px-3 py-2 text-sm rounded-none focus:outline-none focus:ring-2 focus:ring-[#1B49B8] text-black placeholder-gray-400 font-sans resize-y"
-                    placeholder="Describe specific structural targets, materials needed, load metrics..."
+                    placeholder="Describe your specific project *"
                   />
                 </div>
 
