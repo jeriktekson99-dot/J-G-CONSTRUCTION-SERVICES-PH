@@ -35,10 +35,10 @@ export default function Services({ onScrollToSection }: ServicesProps) {
     },
     {
       id: "ser-3",
-      title: "General Building Renovation",
+      title: "General Building Construction and Renovation",
       icon: Activity,
       accentColor: "border-t-4 border-t-industrial-red",
-      description: "Corporate office modernizations, load-bearing transfers, facade cladding, and structural repairs.",
+      description: "General building construction from residential, commercial to warehouse projects, buildings / residential renovations.",
     },
     {
       id: "ser-4",

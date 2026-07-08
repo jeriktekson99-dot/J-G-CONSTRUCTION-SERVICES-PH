@@ -52,10 +52,10 @@ export default function About({ onScrollToSection }: AboutProps) {
     },
     {
       id: "ser-3",
-      title: "General Building Renovation",
+      title: "General Building Construction and Renovation",
       icon: Activity,
       accent: "border-t-4 border-t-industrial-red",
-      scope: "Corporate office modernizations, load-bearing transfers, facade cladding, and structural repairs."
+      scope: "General building construction from residential, commercial to warehouse projects, buildings / residential renovations."
     },
     {
       id: "ser-4",

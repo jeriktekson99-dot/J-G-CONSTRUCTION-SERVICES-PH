@@ -84,15 +84,15 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
   },
   {
     id: "ser-3",
-    title: "General Building Renovation",
+    title: "General Building Construction and Renovation",
     tagline: "Transformative Modernizations & Extension Architectures",
-    description: "Modernizing corporate spaces and private residences. We execute structural repairs, spatial extensions, structural load transfers, and facade renovations to renew functional utilities without safety compromise.",
+    description: "General building construction from residential, commercial to warehouse projects, buildings / residential renovations.",
     image: "/assets/images/commercial_development_1780500228422.png",
     metric: "₱0.00",
     metricLabel: "Unapproved Budget Spillover in Scope Upgrades",
     scopeItems: [
-      "Complete electrical/plumbing strip-outs and safe load-bearing transfers.",
-      "Structural rehabilitation of aging columns and historical elements."
+      "New building construction (residential, commercial warehouses)",
+      "General Renovation"
     ]
   },
   {
@@ -648,7 +648,8 @@ export const dataStore = {
       return DEFAULT_SERVICES;
     }
     const parsed = JSON.parse(raw);
-    if (parsed.length < DEFAULT_SERVICES.length) {
+    const hasOldTitle = parsed.some((s: any) => s.id === "ser-3" && s.title === "General Building Renovation");
+    if (hasOldTitle || parsed.length < DEFAULT_SERVICES.length) {
       safeSetItem('jg_services', JSON.stringify(DEFAULT_SERVICES));
       return DEFAULT_SERVICES;
     }
