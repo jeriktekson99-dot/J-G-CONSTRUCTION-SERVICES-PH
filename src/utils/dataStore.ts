@@ -97,7 +97,7 @@ export const DEFAULT_SERVICES: ServiceItem[] = [
   },
   {
     id: "ser-4",
-    title: "Civil Works & Site Infrastructure",
+    title: "Civil Works",
     tagline: "High-Grade Earthworks, Roads & Demarcations",
     description: "Site layout grading, site volume clearing, robust drainage pipes, concrete roadways, and retaining systems designed for slope and soil stability.",
     image: "/assets/images/civil_infrastructure_1780500263690.png",

@@ -154,7 +154,7 @@ export default function Footer({ setView, onScrollToSection }: FooterProps) {
                   onClick={() => handleLinkClick('services')} 
                   className="text-gray-600 hover:text-industrial-red cursor-pointer transition-colors text-left"
                 >
-                  Civil Works & Site Infrastructure
+                  Civil Works
                 </button>
               </li>
               <li>

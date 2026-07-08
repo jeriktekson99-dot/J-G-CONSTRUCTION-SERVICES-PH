@@ -42,7 +42,7 @@ export default function Services({ onScrollToSection }: ServicesProps) {
     },
     {
       id: "ser-4",
-      title: "Civil Works & Infrastructure",
+      title: "Civil Works",
       icon: MapPin,
       accentColor: "border-t-4 border-t-engineering-blue",
       description: "Heavy site layout grading, volumetric balancing, storm drainage channels, and concrete roads.",

@@ -59,7 +59,7 @@ export default function About({ onScrollToSection }: AboutProps) {
     },
     {
       id: "ser-4",
-      title: "Civil Works & Infrastructure",
+      title: "Civil Works",
       icon: MapPin,
       accent: "border-t-4 border-t-engineering-blue",
       scope: "Heavy site layout grading, volumetric balancing, storm drainage channels, and concrete roads."
