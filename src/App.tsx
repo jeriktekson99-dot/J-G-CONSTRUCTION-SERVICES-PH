@@ -217,8 +217,8 @@ export default function App() {
       }
     }
 
-    // 2. Poll every 30 seconds as a light fallback when the tab/window is visible
-    const intervalId = setInterval(triggerSync, 30000);
+    // 2. Poll every 5 minutes as a light fallback when the tab/window is visible
+    const intervalId = setInterval(triggerSync, 300000);
 
     // Sync instantly when user clicks back onto the tab or window
     const handleVisibilityChange = () => {

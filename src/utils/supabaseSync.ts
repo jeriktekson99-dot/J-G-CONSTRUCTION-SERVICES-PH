@@ -338,7 +338,7 @@ export const supabaseSync = {
    * If Supabase has data, it overwrites the local storage.
    * If Supabase is empty, it seeds Supabase with the local storage's default/current data.
    */
-  async pullAll(): Promise<boolean> {
+  async pullAll(includeAdmin: boolean = false): Promise<boolean> {
     if (!isSupabaseConfigured || !supabase) {
       console.log('Supabase is not configured yet. Using localStorage.');
       return false;
@@ -402,6 +402,9 @@ export const supabaseSync = {
       return false;
     }
 
+    const isCurrentViewAdmin = typeof window !== 'undefined' && localStorage.getItem('jg_current_view') === 'admin-portal';
+    const finalIncludeAdmin = includeAdmin || isCurrentViewAdmin;
+
     let hasError = false;
     let missingTables: string[] = [];
     let firstGeneralError: string | null = null;
@@ -423,6 +426,7 @@ export const supabaseSync = {
         }
       };
       const fetchLeads = async () => {
+        if (!finalIncludeAdmin) return { data: [], error: null };
         try {
           return await supabase.from('leads').select('*');
         } catch (e: any) {
@@ -437,6 +441,7 @@ export const supabaseSync = {
         }
       };
       const fetchHistory = async () => {
+        if (!finalIncludeAdmin) return { data: [], error: null };
         try {
           return await supabase.from('historical_records').select('*');
         } catch (e: any) {
@@ -527,6 +532,10 @@ export const supabaseSync = {
       remoteData: any[] | null,
       defaultData: any[]
     ) => {
+      if (!finalIncludeAdmin && (tableName === 'leads' || tableName === 'historical_records')) {
+        // Skip sync entirely for admin-only tables when we are in public view mode
+        return;
+      }
       if (remoteData === null) {
         // Fallback: If local storage has no records, populate it with default records so the app is not blank on fetch failure
         const localRaw = localStorage.getItem(localStorageKey);
